@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>糍粑记忆卡插件</title>
+    <script src="../js/popup.js"></script>
+    <link rel="stylesheet" href="../css/popup.css"/>
+</head>
+<body>
+    <!-- 隐私告知条（首次安装/未同意时显示，同意后由 JS 隐藏） -->
+    <div id="privacy-notice" class="privacy-notice" style="display:none;">
+        <p class="privacy-notice__text">
+            首次使用需阅读并同意我们的
+            <a id="privacy-policy-link" href="https://cibaen.com/privacy-policy.html" target="_blank" rel="noopener noreferrer">《隐私政策》</a>。
+            我们仅收集您主动划词/截图的字幕文本用于查词与加卡，详见隐私政策。
+        </p>
+        <label class="privacy-notice__check">
+            <input type="checkbox" id="privacy-agree-checkbox">
+            <span>我已阅读并同意《隐私政策》</span>
+        </label>
+        <button id="privacy-agree-btn" class="privacy-notice__btn" disabled>确认并继续使用</button>
+    </div>
+
+    <!-- 未登录态 -->
+    <div class="card" id="not_logged">
+        <div class="card__tip">微信扫码登录后开通生词本<br>可在微信里进行复习</div>
+        <div class="qrcode-wrapper">
+            <img class="qrcode hide" id="qrcode" src="" alt="微信扫码登录" />
+        </div>
+        <div id="password-login-section" class="password-login-section">
+            <div class="divider">———— 或账号登录（测试/审核用） ————</div>
+            <input type="text" id="login-username" class="login-input" placeholder="请输入账号" />
+            <input type="password" id="login-password" class="login-input" placeholder="请输入密码" />
+            <button id="login-btn" class="btn-primary login-btn">登 录</button>
+            <div id="login-error" class="login-error"></div>
+        </div>
+    </div>
+
+    <!-- 已登录态 -->
+    <div class="card hide" id="logged">
+        <div class="card__tip left bold">1. 在视频播放页面空格键暂停可识别字幕并添加单词本</div>
+        <div class="card__tip left">2. 在英文网页鼠标双击取词添加单词本</div>
+        <div class="card__tip left">3. 在微信搜索小程序 <strong>"糍粑记忆卡"</strong> 复习单词</div>
+        <a class="btn-primary" href="" id="ciba_main" target="_blank">进入网页学习</a>
+        
+        <div class="actions">
+            <a class="actions__link" href="./options.html" target="_blank">选词设置</a>
+            <a class="actions__link" href="./video_ocr_options.html" target="_blank">字幕 OCR 设置</a>
+            <span class="actions__link" id="relogin">重新扫码</span>
+        </div>
+    </div>
+
+    <!-- 通过 Apple 登录：仅 Safari 扩展 + appleLoginEnabled 开启 + 当前未登录时由 popup.js 显示 -->
+    <button id="apple-login-btn" class="apple-login-btn" type="button" style="display:none;">
+        <svg viewBox="0 0 384 512" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+        <span>通过 Apple 登录</span>
+    </button>
+
+    <!-- Apple 登录权限诊断条：Safari 没允许 cibaen.com 时显示（popup.js 控制显隐） -->
+    <div id="apple-permission-warning" class="apple-permission-warning" style="display:none;">
+        <div class="apple-permission-warning__title">⚠️ Apple 登录需要 Safari 扩展在 cibaen.com 上有访问权限</div>
+        <div class="apple-permission-warning__text">
+            请到 <b>Safari → 偏好设置 → 扩展 → 糍粑记忆卡 → 网站访问权限</b>，把 cibaen.com 改为"允许"，然后重启 Safari。
+        </div>
+    </div>
+
+    <!-- ===== 网站禁用开关：提到最外面，始终显示 ===== -->
+    <div class="disable-row">
+        <div>
+            <div class="disable-row__label">在此网站禁用</div>
+            <div class="disable-row__site" id="currentSiteName">获取中...</div>
+        </div>
+        <label class="toggle">
+            <input type="checkbox" id="disableToggle">
+            <span class="toggle__slider"></span>
+        </label>
+    </div>
+</body>
+</html>

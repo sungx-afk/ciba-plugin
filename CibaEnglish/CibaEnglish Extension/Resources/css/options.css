@@ -1,0 +1,166 @@
+/* ===== 设计变量（与插件B完全统一） ===== */
+:root {
+  --bg-color: #0f172a;
+  --card-bg: #1e293b;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent: #38bdf8;
+  --accent-hover: #0284c7;
+  --border: rgba(255, 255, 255, 0.1);
+}
+
+/* ===== 基础 ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 320px;
+  padding: 20px 18px;          /* 上下放宽到 20px */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+  line-height: 1.6;             /* 全局行高，文本不挤 */
+  color: var(--text-main);
+  background: var(--bg-color);
+}
+
+/* ===== 分组容器 ===== */
+.group-wrapper {
+  margin-bottom: 24px;          /* 分组之间 24px */
+  padding-bottom: 20px;         /* 分组底部留白 */
+  border-bottom: 1px solid var(--border);
+}
+
+.group-wrapper:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* ===== 标题 ===== */
+.group-wrapper .title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 6px;           /* 标题和副标题之间留空 */
+}
+
+.group-wrapper .sub-title {
+  margin-top: 12px;
+  margin-bottom: 10px;          /* 副标题和单选组之间留空 */
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ===== 单选组 ===== */
+.group-wrapper .raido-group-wrapper {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;                     /* 每个选项之间 8px */
+}
+
+.group-wrapper .raido-group-wrapper .radio-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;                     /* 单选框和文字间距 */
+  margin-bottom: 0;
+  font-size: 13px;
+  color: var(--text-main);
+  line-height: 1.5;
+}
+
+.group-wrapper .raido-group-wrapper .radio-wrapper input[type="radio"],
+.group-wrapper .raido-group-wrapper .radio-wrapper input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  cursor: pointer;
+}
+
+/* ===== 保存按钮 ===== */
+.save-btn {
+  background: var(--accent);
+  border: none;
+  color: #0f172a;
+  padding: 10px 24px;           /* 按钮更饱满 */
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 20px;              /* 按钮和上方内容留空 */
+}
+
+.save-btn:hover {
+  background: var(--accent-hover);
+  color: #ffffff;
+}
+
+/* ===== Toast 提示（深色版） ===== */
+.toast-content {
+  min-width: 280px;
+  max-width: 90vw;
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  position: fixed;
+  z-index: 9999999999;
+  left: 50%;
+  top: 20px;
+  transform: translateX(-50%);
+  background-color: var(--card-bg);
+  transition: opacity 0.3s, transform .4s;
+  overflow: hidden;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-main);
+  font-size: 13px;
+  line-height: 1.5;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.toast-content::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--accent);
+}
+
+.toast-info {
+  color: var(--text-muted);
+}
+
+.toast-success {
+  border-left: 3px solid #10b981;
+  color: #10b981;
+}
+
+.toast-warning {
+  border-left: 3px solid #f59e0b;
+  color: #f59e0b;
+}
+
+.toast-error {
+  border-left: 3px solid #ef4444;
+  color: #ef4444;
+}
+
+.toast {
+  padding: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}

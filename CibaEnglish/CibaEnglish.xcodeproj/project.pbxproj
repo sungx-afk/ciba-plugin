@@ -1,0 +1,653 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D666FB0C30788AE600BFBA50 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D666FB0B30788AE600BFBA50 /* AppDelegate.swift */; };
+		D666FB1030788AE600BFBA50 /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = D666FB0E30788AE600BFBA50 /* Main.html */; };
+		D666FB1230788AE600BFBA50 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D666FB1130788AE600BFBA50 /* Icon.png */; };
+		D666FB1430788AE600BFBA50 /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = D666FB1330788AE600BFBA50 /* Style.css */; };
+		D666FB1630788AE600BFBA50 /* Script.js in Resources */ = {isa = PBXBuildFile; fileRef = D666FB1530788AE600BFBA50 /* Script.js */; };
+		D666FB1830788AE600BFBA50 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D666FB1730788AE600BFBA50 /* ViewController.swift */; };
+		D666FB1B30788AE600BFBA50 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D666FB1930788AE600BFBA50 /* Main.storyboard */; };
+		D666FB1D30788AEC00BFBA50 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D666FB1C30788AEC00BFBA50 /* Assets.xcassets */; };
+		D666FB2630788AED00BFBA50 /* CibaEnglish Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D666FB2530788AED00BFBA50 /* CibaEnglish Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D666FB2B30788AED00BFBA50 /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D666FB2A30788AED00BFBA50 /* SafariWebExtensionHandler.swift */; };
+		D666FB4030788AEE00BFBA50 /* privacy-policy.html in Resources */ = {isa = PBXBuildFile; fileRef = D666FB3830788AEE00BFBA50 /* privacy-policy.html */; };
+		D666FB4130788AEE00BFBA50 /* css in Resources */ = {isa = PBXBuildFile; fileRef = D666FB3930788AEE00BFBA50 /* css */; };
+		D666FB4230788AEE00BFBA50 /* images in Resources */ = {isa = PBXBuildFile; fileRef = D666FB3A30788AEE00BFBA50 /* images */; };
+		D666FB4330788AEE00BFBA50 /* js in Resources */ = {isa = PBXBuildFile; fileRef = D666FB3B30788AEE00BFBA50 /* js */; };
+		D666FB4430788AEE00BFBA50 /* readme.md in Resources */ = {isa = PBXBuildFile; fileRef = D666FB3C30788AEE00BFBA50 /* readme.md */; };
+		D666FB4530788AEE00BFBA50 /* icons in Resources */ = {isa = PBXBuildFile; fileRef = D666FB3D30788AEE00BFBA50 /* icons */; };
+		D666FB4630788AEE00BFBA50 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = D666FB3E30788AEE00BFBA50 /* manifest.json */; };
+		D666FB4730788AEE00BFBA50 /* pages in Resources */ = {isa = PBXBuildFile; fileRef = D666FB3F30788AEE00BFBA50 /* pages */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D666FB2730788AED00BFBA50 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D666FB0030788AE600BFBA50 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D666FB2430788AED00BFBA50;
+			remoteInfo = "CibaEnglish Extension";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		D666FB3330788AED00BFBA50 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				D666FB2630788AED00BFBA50 /* CibaEnglish Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		D666FB0830788AE600BFBA50 /* CibaEnglish.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CibaEnglish.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D666FB0B30788AE600BFBA50 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		D666FB0F30788AE600BFBA50 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = ../Base.lproj/Main.html; sourceTree = "<group>"; };
+		D666FB1130788AE600BFBA50 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		D666FB1330788AE600BFBA50 /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
+		D666FB1530788AE600BFBA50 /* Script.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Script.js; sourceTree = "<group>"; };
+		D666FB1730788AE600BFBA50 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		D666FB1A30788AE600BFBA50 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		D666FB1C30788AEC00BFBA50 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D666FB1E30788AEC00BFBA50 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D666FB1F30788AEC00BFBA50 /* CibaEnglish.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CibaEnglish.entitlements; sourceTree = "<group>"; };
+		D666FB2030788AEC00BFBA50 /* CibaEnglish.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CibaEnglish.entitlements; sourceTree = "<group>"; };
+		D666FB2530788AED00BFBA50 /* CibaEnglish Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "CibaEnglish Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D666FB2A30788AED00BFBA50 /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
+		D666FB2C30788AED00BFBA50 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D666FB2D30788AED00BFBA50 /* CibaEnglish_Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CibaEnglish_Extension.entitlements; sourceTree = "<group>"; };
+		D666FB3830788AEE00BFBA50 /* privacy-policy.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = "privacy-policy.html"; path = "Resources/privacy-policy.html"; sourceTree = "<group>"; };
+		D666FB3930788AEE00BFBA50 /* css */ = {isa = PBXFileReference; lastKnownFileType = folder; name = css; path = Resources/css; sourceTree = "<group>"; };
+		D666FB3A30788AEE00BFBA50 /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; name = images; path = Resources/images; sourceTree = "<group>"; };
+		D666FB3B30788AEE00BFBA50 /* js */ = {isa = PBXFileReference; lastKnownFileType = folder; name = js; path = Resources/js; sourceTree = "<group>"; };
+		D666FB3C30788AEE00BFBA50 /* readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = readme.md; path = Resources/readme.md; sourceTree = "<group>"; };
+		D666FB3D30788AEE00BFBA50 /* icons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = icons; path = Resources/icons; sourceTree = "<group>"; };
+		D666FB3E30788AEE00BFBA50 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = Resources/manifest.json; sourceTree = "<group>"; };
+		D666FB3F30788AEE00BFBA50 /* pages */ = {isa = PBXFileReference; lastKnownFileType = folder; name = pages; path = Resources/pages; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D666FB0530788AE600BFBA50 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D666FB2230788AED00BFBA50 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D666FAFF30788AE600BFBA50 = {
+			isa = PBXGroup;
+			children = (
+				D666FB0A30788AE600BFBA50 /* CibaEnglish */,
+				D666FB2930788AED00BFBA50 /* CibaEnglish Extension */,
+				D666FB0930788AE600BFBA50 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D666FB0930788AE600BFBA50 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D666FB0830788AE600BFBA50 /* CibaEnglish.app */,
+				D666FB2530788AED00BFBA50 /* CibaEnglish Extension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D666FB0A30788AE600BFBA50 /* CibaEnglish */ = {
+			isa = PBXGroup;
+			children = (
+				D666FB0B30788AE600BFBA50 /* AppDelegate.swift */,
+				D666FB1730788AE600BFBA50 /* ViewController.swift */,
+				D666FB1930788AE600BFBA50 /* Main.storyboard */,
+				D666FB1C30788AEC00BFBA50 /* Assets.xcassets */,
+				D666FB1E30788AEC00BFBA50 /* Info.plist */,
+				D666FB1F30788AEC00BFBA50 /* CibaEnglish.entitlements */,
+				D666FB2030788AEC00BFBA50 /* CibaEnglish.entitlements */,
+				D666FB0D30788AE600BFBA50 /* Resources */,
+			);
+			path = CibaEnglish;
+			sourceTree = "<group>";
+		};
+		D666FB0D30788AE600BFBA50 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D666FB0E30788AE600BFBA50 /* Main.html */,
+				D666FB1130788AE600BFBA50 /* Icon.png */,
+				D666FB1330788AE600BFBA50 /* Style.css */,
+				D666FB1530788AE600BFBA50 /* Script.js */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		D666FB2930788AED00BFBA50 /* CibaEnglish Extension */ = {
+			isa = PBXGroup;
+			children = (
+				D666FB3730788AEE00BFBA50 /* Resources */,
+				D666FB2A30788AED00BFBA50 /* SafariWebExtensionHandler.swift */,
+				D666FB2C30788AED00BFBA50 /* Info.plist */,
+				D666FB2D30788AED00BFBA50 /* CibaEnglish_Extension.entitlements */,
+			);
+			path = "CibaEnglish Extension";
+			sourceTree = "<group>";
+		};
+		D666FB3730788AEE00BFBA50 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D666FB3830788AEE00BFBA50 /* privacy-policy.html */,
+				D666FB3930788AEE00BFBA50 /* css */,
+				D666FB3A30788AEE00BFBA50 /* images */,
+				D666FB3B30788AEE00BFBA50 /* js */,
+				D666FB3C30788AEE00BFBA50 /* readme.md */,
+				D666FB3D30788AEE00BFBA50 /* icons */,
+				D666FB3E30788AEE00BFBA50 /* manifest.json */,
+				D666FB3F30788AEE00BFBA50 /* pages */,
+			);
+			name = Resources;
+			path = "CibaEnglish Extension";
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D666FB0730788AE600BFBA50 /* CibaEnglish */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D666FB3430788AED00BFBA50 /* Build configuration list for PBXNativeTarget "CibaEnglish" */;
+			buildPhases = (
+				D666FB0430788AE600BFBA50 /* Sources */,
+				D666FB0530788AE600BFBA50 /* Frameworks */,
+				D666FB0630788AE600BFBA50 /* Resources */,
+				D666FB3330788AED00BFBA50 /* Embed Foundation Extensions */,
+				D666FB5230788AED00BFBA52 /* Deploy to /Applications */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D666FB2830788AED00BFBA50 /* PBXTargetDependency */,
+			);
+			name = CibaEnglish;
+			productName = CibaEnglish;
+			productReference = D666FB0830788AE600BFBA50 /* CibaEnglish.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D666FB2430788AED00BFBA50 /* CibaEnglish Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D666FB3030788AED00BFBA50 /* Build configuration list for PBXNativeTarget "CibaEnglish Extension" */;
+			buildPhases = (
+				D666FB5030788AED00BFBA51 /* Sync from ciba-plugin */,
+				D666FB2130788AED00BFBA50 /* Sources */,
+				D666FB2230788AED00BFBA50 /* Frameworks */,
+				D666FB2330788AED00BFBA50 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "CibaEnglish Extension";
+			productName = "CibaEnglish Extension";
+			productReference = D666FB2530788AED00BFBA50 /* CibaEnglish Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D666FB0030788AE600BFBA50 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					D666FB0730788AE600BFBA50 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+					D666FB2430788AED00BFBA50 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = D666FB0330788AE600BFBA50 /* Build configuration list for PBXProject "CibaEnglish" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D666FAFF30788AE600BFBA50;
+			productRefGroup = D666FB0930788AE600BFBA50 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D666FB0730788AE600BFBA50 /* CibaEnglish */,
+				D666FB2430788AED00BFBA50 /* CibaEnglish Extension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D666FB0630788AE600BFBA50 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D666FB1230788AE600BFBA50 /* Icon.png in Resources */,
+				D666FB1B30788AE600BFBA50 /* Main.storyboard in Resources */,
+				D666FB1630788AE600BFBA50 /* Script.js in Resources */,
+				D666FB1030788AE600BFBA50 /* Main.html in Resources */,
+				D666FB1D30788AEC00BFBA50 /* Assets.xcassets in Resources */,
+				D666FB1430788AE600BFBA50 /* Style.css in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D666FB2330788AED00BFBA50 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D666FB4230788AEE00BFBA50 /* images in Resources */,
+				D666FB4630788AEE00BFBA50 /* manifest.json in Resources */,
+				D666FB4130788AEE00BFBA50 /* css in Resources */,
+				D666FB4030788AEE00BFBA50 /* privacy-policy.html in Resources */,
+				D666FB4530788AEE00BFBA50 /* icons in Resources */,
+				D666FB4730788AEE00BFBA50 /* pages in Resources */,
+				D666FB4430788AEE00BFBA50 /* readme.md in Resources */,
+				D666FB4330788AEE00BFBA50 /* js in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D666FB5030788AED00BFBA51 /* Sync from ciba-plugin */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Sync from ciba-plugin";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "cd \"${SRCROOT}/..\" && ./sync-to-safari.sh\n";
+		};
+		D666FB5230788AED00BFBA52 /* Deploy to /Applications */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Deploy to /Applications";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "if [ \"$CONFIGURATION\" != \"Debug\" ]; then\n  echo \"Skip deploy: only Debug builds deploy to /Applications, Archive is not affected\"\n  exit 0\nfi\nDST=\"/Applications/CibaEnglish.app\"\nSRC=\"${BUILT_PRODUCTS_DIR}/CibaEnglish.app\"\necho \"🚀 Deploying: $SRC → $DST\"\nif [ ! -d \"$SRC\" ]; then\n  echo \"❌ 源 .app 不存在: $SRC\"; exit 1\nfi\nif [ -d \"$DST\" ]; then\n  rm -rf \"$DST\" || { echo \"❌ 无法删除旧的 $DST\"; exit 1; }\nfi\nditto \"$SRC\" \"$DST\" && echo \"✅ 已部署到 $DST\" || { echo \"❌ 部署失败\"; exit 1; }\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D666FB0430788AE600BFBA50 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D666FB1830788AE600BFBA50 /* ViewController.swift in Sources */,
+				D666FB0C30788AE600BFBA50 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D666FB2130788AED00BFBA50 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D666FB2B30788AED00BFBA50 /* SafariWebExtensionHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D666FB2830788AED00BFBA50 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D666FB2430788AED00BFBA50 /* CibaEnglish Extension */;
+			targetProxy = D666FB2730788AED00BFBA50 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		D666FB0E30788AE600BFBA50 /* Main.html */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D666FB0F30788AE600BFBA50 /* Base */,
+			);
+			name = Main.html;
+			sourceTree = "<group>";
+		};
+		D666FB1930788AE600BFBA50 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D666FB1A30788AE600BFBA50 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		D666FB2E30788AED00BFBA50 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.7;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		D666FB2F30788AED00BFBA50 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.7;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		D666FB3130788AED00BFBA50 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "CibaEnglish Extension/CibaEnglish_Extension.entitlements";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = JGBX7E5U56;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "CibaEnglish Extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "CibaEnglish Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.yugusoft.CibaEnglish.plugin.Extension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		D666FB3230788AED00BFBA50 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "CibaEnglish Extension/CibaEnglish_Extension.entitlements";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = JGBX7E5U56;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "CibaEnglish Extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "CibaEnglish Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.yugusoft.CibaEnglish.plugin.Extension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		D666FB3530788AED00BFBA50 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CibaEnglish/CibaEnglish.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = JGBX7E5U56;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CibaEnglish/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = CibaEnglish;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.yugusoft.CibaEnglish.plugin;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		D666FB3630788AED00BFBA50 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CibaEnglish/CibaEnglish.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = JGBX7E5U56;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CibaEnglish/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = CibaEnglish;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.yugusoft.CibaEnglish.plugin;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D666FB0330788AE600BFBA50 /* Build configuration list for PBXProject "CibaEnglish" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D666FB2E30788AED00BFBA50 /* Debug */,
+				D666FB2F30788AED00BFBA50 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D666FB3030788AED00BFBA50 /* Build configuration list for PBXNativeTarget "CibaEnglish Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D666FB3130788AED00BFBA50 /* Debug */,
+				D666FB3230788AED00BFBA50 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D666FB3430788AED00BFBA50 /* Build configuration list for PBXNativeTarget "CibaEnglish" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D666FB3530788AED00BFBA50 /* Debug */,
+				D666FB3630788AED00BFBA50 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D666FB0030788AE600BFBA50 /* Project object */;
+}

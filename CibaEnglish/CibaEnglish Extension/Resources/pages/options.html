@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>配置页</title>
+		<script src="../js/options.js"></script>
+		<link rel="stylesheet" href="../css/options.css"/>
+		</head>
+	<body>
+    <div class="group-wrapper">
+			<div class="title">1. 英文单词选中文本方式</div>
+			<div class="raido-group-wrapper" style="display: none;">
+				<div class="radio-wrapper">
+					<input type="radio" name="word_click" id="word_click" value="0"><label for="word_click">单击单词取词</label>
+				</div>
+				<div class="radio-wrapper">
+					<input type="radio" name="word_click" id="word_doubleclick" value="1"><label for="word_doubleclick">双击单词取词</label>
+				</div>
+			</div>
+			<p style="font-size: 14px;">• 双击单词取词</p>
+			<p style="font-size: 14px;">• 鼠标选中后滑动取词</p>
+    </div>
+		<div class="group-wrapper">
+			<div class="title">2. 单词翻译和记忆卡弹出方式</div>
+			<div class="sub-title">英文单词</div>
+			<div class="raido-group-wrapper">
+				<div class="radio-wrapper">
+					<input type="radio" name="word_popup" id="word_popup_direct" value="0"><label for="word_popup_direct">选中单词后直接弹出</label>
+				</div>
+				<div class="radio-wrapper">
+					<input type="radio" name="word_popup" id="word_popup_image" value="1"><label for="word_popup_image">选中单词后点击图标再弹出</label>
+				</div>
+			</div>
+			<div class="sub-title">句子</div>
+			<div class="raido-group-wrapper">
+				<div class="radio-wrapper">
+					<input type="radio" name="sentence_popup" id="sentence_popup_image" value="0"><label for="sentence_popup_image">选中文本后点击图标再弹出</label>
+				</div>
+				<div class="radio-wrapper">
+					<input type="radio" name="sentence_popup" id="sentence_popup_direct" value="1"><label for="sentence_popup_direct">选中文本后直接弹出</label>
+				</div>
+			</div>
+    </div>
+    <button class="save-btn" id="save_btn">保存</button>
+	</body>
+</html>

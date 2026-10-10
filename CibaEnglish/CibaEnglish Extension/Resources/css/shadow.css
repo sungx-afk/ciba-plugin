@@ -1,0 +1,128 @@
+/* ============================================================
+   糍粑记忆插件 A · shadow.css
+   视觉对齐插件 B（video_ocr_content.css）深色主题
+   · 所有 class 名、选择器、JS 调用方式 零改动
+   · 仅调整颜色 / 圆角 / 阴影 / 滚动条等视觉层
+   ============================================================ */
+
+/* ===== 滚动条基础参数（与插件B统一） ===== */
+:root {
+  --scroll-track: rgba(255, 255, 255, 0.06);
+  --scroll-thumb: rgba(255, 255, 255, 0.12);
+  --scroll-thumb-hover: rgba(255, 255, 255, 0.22);
+}
+
+/* ===== 记忆卡主体滚动条 ===== */
+.ciba_card_body::-webkit-scrollbar {
+  width: 4px;
+  height: 6px;
+}
+.ciba_card_body::-webkit-scrollbar-track {
+  border-radius: 2px;
+  background: var(--scroll-track);
+}
+.ciba_card_body::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background: var(--scroll-thumb);
+}
+.ciba_card_body::-webkit-scrollbar-thumb:hover {
+  background: var(--scroll-thumb-hover);
+}
+
+/* ===== 编辑器滚动条 ===== */
+.ciba_editor::-webkit-scrollbar {
+  width: 4px;
+  height: 6px;
+}
+.ciba_editor::-webkit-scrollbar-track {
+  border-radius: 2px;
+  background: var(--scroll-track);
+}
+.ciba_editor::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background: var(--scroll-thumb);
+}
+.ciba_editor::-webkit-scrollbar-thumb:hover {
+  background: var(--scroll-thumb-hover);
+}
+
+/* ===== 单词翻译区滚动条 ===== */
+.ciba_word_translate::-webkit-scrollbar {
+  width: 4px;
+  height: 6px;
+}
+.ciba_word_translate::-webkit-scrollbar-track {
+  border-radius: 2px;
+  background: var(--scroll-track);
+}
+.ciba_word_translate::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background: var(--scroll-thumb);
+}
+.ciba_word_translate::-webkit-scrollbar-thumb:hover {
+  background: var(--scroll-thumb-hover);
+}
+
+/* ===== Toast 提示（深色卡片 + 左侧色条，对齐插件B风格） ===== */
+.toast-content {
+  min-width: 280px;
+  max-width: 90vw;
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  position: fixed;
+  z-index: 9999999999;
+  left: 50%;
+  top: 20px;
+  transform: translateX(-50%);
+  background-color: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: opacity 0.3s, transform .4s;
+  overflow: hidden;
+  padding: 13px 16px 13px 20px;
+  display: flex;
+  align-items: center;
+  color: #f8fafc;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+/* 左侧色条（对齐插件B的 border-left 做法） */
+.toast-content::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #38bdf8;
+}
+
+.toast-info {
+  color: #94a3b8;
+}
+
+.toast-success {
+  border-left: 3px solid #10b981;
+  color: #10b981;
+}
+
+.toast-warning {
+  border-left: 3px solid #f59e0b;
+  color: #f59e0b;
+}
+
+.toast-error {
+  border-left: 3px solid #ef4444;
+  color: #ef4444;
+}
+
+.toast {
+  padding: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}

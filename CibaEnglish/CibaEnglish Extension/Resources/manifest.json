@@ -1,0 +1,102 @@
+{
+  "manifest_version": 3,
+  "name": "糍粑记忆卡 + 视频字幕OCR",
+  "version": "2.0.5",
+  "description": "在视频网站自动识别字幕并查词翻译，在任意网页划词查询糍粑词典、加入生词本。",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "action": {
+    "default_popup": "pages/popup.html",
+    "default_title": "糍粑记忆卡",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.youtube.com/*"],
+      "js": ["js/youtube_subtitle_bridge.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://cibaen.com/apple-login*",
+        "https://www.cibaen.com/apple-login*"
+      ],
+      "js": ["js/apple_login_bridge.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["<all_urls>"],
+      "exclude_matches": [
+        "https://*.cctv.com/*",
+        "https://*.qq.com/*",
+        "https://*.iqiyi.com/*",
+        "https://*.youku.com/*",
+        "https://*.bilibili.com/*",
+        "https://*.mgtv.com/*",
+        "https://*.ixigua.com/*",
+        "https://*.acfun.cn/*",
+        "https://*.douyin.com/*",
+        "https://tv.sohu.com/*",
+        "https://*.youtube.com/*",
+        "https://*.ted.com/*",
+        "https://*.netflix.com/*"
+      ],
+      "js": ["js/content_script.js"],
+      "css": ["css/shadow.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://*.cctv.com/*",
+        "https://*.qq.com/*",
+        "https://*.iqiyi.com/*",
+        "https://*.youku.com/*",
+        "https://*.bilibili.com/*",
+        "https://*.mgtv.com/*",
+        "https://*.ixigua.com/*",
+        "https://*.acfun.cn/*",
+        "https://*.douyin.com/*",
+        "https://tv.sohu.com/*",
+        "https://*.youtube.com/*",
+        "https://*.ted.com/*",
+        "https://*.netflix.com/*"
+      ],
+      "exclude_matches": [
+        "https://open.weixin.qq.com/*",
+        "https://open.work.weixin.qq.com/*"
+      ],
+      "js": ["js/video_ocr_content.js"],
+      "css": ["css/video_ocr_content.css"],
+      "all_frames": true,
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": [
+    "storage",
+    "activeTab",
+    "tabs"
+  ],
+  "background": {
+    "service_worker": "js/background.js"
+  },
+  "host_permissions": [
+    "https://www.cibaen.com/*",
+    "https://cibaen.com/*",
+    "https://upload.qiniup.com/*"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["images/*", "icons/*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "options_page": "pages/options.html"
+}

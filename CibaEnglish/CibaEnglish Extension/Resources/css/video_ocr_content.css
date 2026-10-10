@@ -1,0 +1,755 @@
+/* 视频字幕 OCR 助手 Content Script 样式 */
+
+#ciba-video-ocr-toast {
+  position: fixed !important;
+  bottom: 80px !important;
+  right: 40px !important;
+  z-index: 2147483647 !important;
+  background: rgba(15, 23, 42, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(56, 189, 248, 0.4) !important;
+  color: #f8fafc !important;
+  padding: 12px 20px !important;
+  border-radius: 30px !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  opacity: 0 !important;
+  transform: translateY(20px) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  pointer-events: none !important;
+}
+
+#ciba-video-ocr-toast.show {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+.ciba-video-ocr-spinner {
+  width: 16px !important;
+  height: 16px !important;
+  border: 2px solid rgba(56, 189, 248, 0.2) !important;
+  border-top-color: #38bdf8 !important;
+  border-radius: 50% !important;
+  animation: ciba-video-ocr-spin 0.8s linear infinite !important;
+}
+
+@keyframes ciba-video-ocr-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* OCR 识别结果浮动弹窗面板 */
+#ciba-video-ocr-card {
+  position: fixed !important;
+  bottom: 120px !important;
+  right: 40px !important;
+  width: 380px !important;
+  max-width: calc(100vw - 80px) !important;
+  max-height: 640px !important;
+  z-index: 2147483647 !important;
+  background: rgba(15, 23, 42, 0.95) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(56, 189, 248, 0.4) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8) !important;
+  color: #f8fafc !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  transform: scale(0.95) translateY(10px) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  visibility: hidden !important;
+}
+
+#ciba-video-ocr-card.show {
+  opacity: 1 !important;
+  transform: scale(1) translateY(0) !important;
+  visibility: visible !important;
+}
+
+.ciba-video-ocr-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 14px 18px !important;
+  background: rgba(30, 41, 59, 0.9) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  cursor: move !important;
+  user-select: none !important;
+}
+
+.ciba-video-ocr-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #38bdf8 !important;
+}
+
+.ciba-video-ocr-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.ciba-video-ocr-btn-icon {
+  background: transparent !important;
+  border: none !important;
+  color: #94a3b8 !important;
+  cursor: pointer !important;
+  padding: 4px !important;
+  border-radius: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s !important;
+}
+
+.ciba-video-ocr-btn-icon:hover {
+  color: #f8fafc !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.ciba-video-ocr-body {
+  padding: 16px 18px !important;
+  overflow-y: auto !important;
+  flex: 1 !important;
+}
+
+.ciba-video-ocr-text-box {
+  background: rgba(15, 23, 42, 0.7) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 10px !important;
+  padding: 14px !important;
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+  color: #f1f5f9 !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  user-select: text !important;
+}
+
+.ciba-video-ocr-empty {
+  color: #94a3b8 !important;
+  font-style: italic !important;
+  text-align: center !important;
+  padding: 10px 0 !important;
+}
+
+.ciba-video-ocr-footer {
+  padding: 12px 18px !important;
+  background: rgba(30, 41, 59, 0.7) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.ciba-video-ocr-meta {
+  font-size: 12px !important;
+  color: #64748b !important;
+}
+
+.ciba-video-ocr-copy-btn {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 6px 14px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  transition: all 0.2s !important;
+}
+
+.ciba-video-ocr-copy-btn:hover {
+  background: #0369a1 !important;
+}
+
+.ciba-video-ocr-copy-btn.copied {
+  background: #10b981 !important;
+}
+
+/* 画面上固定常驻快速触发按钮 */
+#ciba-video-ocr-trigger-btn {
+  position: fixed !important;
+  top: 120px !important;
+  right: 10px !important;
+  z-index: 2147483647 !important;
+  background: rgba(15, 23, 42, 0.9) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1.5px solid #38bdf8 !important;
+  color: #38bdf8 !important;
+  padding: 10px 18px !important;
+  border-radius: 24px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+  transition: all 0.2s ease !important;
+  user-select: none !important;
+}
+
+#ciba-video-ocr-trigger-btn:hover {
+  transform: scale(1.08) !important;
+  background: #0f172a !important;
+  color: #ffffff !important;
+  border-color: #0284c7 !important;
+  box-shadow: 0 10px 28px rgba(56, 189, 248, 0.4) !important;
+}
+
+/* 🆕 3 秒后触发按钮收成"圆形 + logo"（带过渡/弹出动画） */
+#ciba-video-ocr-trigger-btn.ciba-video-ocr-trigger-btn--icon {
+  width: 36px !important;
+  height: 36px !important;
+  padding: 4px !important;
+  gap: 0 !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  /* 变形过渡：尺寸/内边距用带轻微回弹的曲线，收拢到圆形更有"弹一下"的手感 */
+  transition: width 0.32s cubic-bezier(0.34, 1.4, 0.64, 1),
+              height 0.32s cubic-bezier(0.34, 1.4, 0.64, 1),
+              padding 0.32s cubic-bezier(0.34, 1.4, 0.64, 1),
+              border-radius 0.32s ease,
+              transform 0.2s ease,
+              background 0.2s ease,
+              border-color 0.2s ease,
+              box-shadow 0.2s ease !important;
+}
+
+/* 收拢阶段：文字不换行、不被压缩，由按钮边缘（overflow: hidden）从两侧对称盖住；
+   文字在收拢前半段就淡完，避免末期被裁成"半个字"的碎条，和 logo 出现形成跳跃感 */
+#ciba-video-ocr-trigger-btn span {
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  transition: opacity 0.16s ease !important;
+}
+
+#ciba-video-ocr-trigger-btn.ciba-video-ocr-trigger-btn--icon span {
+  opacity: 0 !important;
+}
+
+/* logo 绝对居中：不参与 flex 布局，这样它能在收拢过程中就插进来，
+   与仍在淡出的文字重叠共存（交叉淡化），也不会被文字挤出按钮的裁切区 */
+#ciba-video-ocr-trigger-btn .ciba-video-ocr-trigger-logo {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  /* 收拢完成后的内容区尺寸：32 - 1.5*2(边框) - 4*2(内边距) = 21px。
+     用固定尺寸，避免收拢末尾那点回弹把 logo 裁出缺口 */
+  width: 21px !important;
+  height: 21px !important;
+  display: block !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+  pointer-events: none !important;
+  user-select: none !important;
+  -webkit-user-drag: none !important;
+  /* logo 入场：在按钮还在收拢时就淡入并放大，与文字淡出交叉，消灭"空拍" */
+  animation: ciba-video-ocr-logo-in 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+}
+
+@keyframes ciba-video-ocr-logo-in {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2) rotate(-120deg);
+  }
+  55% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+}
+
+/* ===== 单词可点击高亮 ===== */
+.ciba-video-ocr-word {
+  cursor: pointer;
+  color: #4fc3f7;
+  border-bottom: 1px dashed transparent;
+  transition: border-color 0.15s, background 0.15s;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+.ciba-video-ocr-word:hover {
+  border-bottom-color: #4fc3f7;
+  background: rgba(79, 195, 247, 0.1);
+}
+
+/* ===== 单词详情区（无加词按钮） ===== */
+.ciba-video-ocr-word-detail {
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.6;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.ciba-video-ocr-word-detail__word {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.ciba-video-ocr-word-detail__pron {
+  color: #aaa;
+  margin-bottom: 6px;
+}
+.ciba-video-ocr-word-detail__audio {
+  cursor: pointer;
+  margin-left: 2px;
+  font-size: 14px;
+  transition: opacity 0.15s;
+}
+.ciba-video-ocr-word-detail__audio:hover { opacity: 0.7; }
+.ciba-video-ocr-word-detail__pos { color: #ff9800; font-weight: 600; }
+.ciba-video-ocr-word-detail__mean { color: #e0e0e0; }
+.ciba-video-ocr-word-detail__added {
+  margin-top: 6px;
+  color: #07c160;
+  font-size: 12px;
+}
+.ciba-video-ocr-word-detail__loading,
+.ciba-video-ocr-word-detail__error {
+  color: #999;
+  font-style: italic;
+  padding: 4px 0;
+}
+
+/* ===== 底部唯一加词按钮 ===== */
+.ciba-video-ocr-toggle-btn{
+  background-color: transparent !important;
+  border-style: none;
+}
+.ciba-video-ocr-fullpage-toggle-btn{
+  background-color: transparent !important;
+  border-style: none;
+  margin-left: 12px;
+}
+.ciba-video-ocr-add-btn{
+  margin-left: auto;
+}
+.ciba-video-ocr-add-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  background: #07c160;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background 0.2s;
+}
+.ciba-video-ocr-add-btn:hover { background: #06ad56; }
+.ciba-video-ocr-add-btn:disabled {
+  background: #555;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.ciba-video-ocr-add-btn svg { flex-shrink: 0; }
+
+
+/* ===== 登录二维码（嵌入body内） ===== */
+.ciba-video-ocr-login-qr {
+  margin-top: 10px;
+  padding: 14px 10px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  text-align: center;
+  animation: ciba-qr-fadein 0.2s ease-out;
+}
+@keyframes ciba-qr-fadein {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.ciba-video-ocr-login-qr__title {
+  font-size: 12px;
+  color: #fff;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.ciba-video-ocr-login-qr__img-wrap {
+  width: 140px;
+  height: 140px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 6px;
+  padding: 6px;
+}
+.ciba-video-ocr-login-qr__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: none;
+}
+.ciba-video-ocr-login-qr__status {
+  font-size: 11px;
+  color: #aaa;
+  margin-top: 8px;
+}
+.ciba-video-ocr-login-qr__hint {
+  font-size: 10px;
+  color: #666;
+  margin-top: 4px;
+}
+/* YT 覆盖层释义卡内的登录二维码：透出毛玻璃底，提示文字调亮 */
+.ciba-yt-overlay-card .ciba-video-ocr-login-qr {
+  margin-top: 4px;
+  padding: 10px 8px;
+  background: rgba(255, 255, 255, 0.06);
+}
+.ciba-yt-overlay-card .ciba-video-ocr-login-qr__hint {
+  color: #94a3b8;
+}
+.ciba-yt-overlay-card .ciba-video-ocr-login-qr__status {
+  color: #cbd5e1;
+}
+
+/* ===== 加入生词本按钮 disabled 状态==== */
+.ciba-video-ocr-add-btn:disabled {
+  background: #555 !important;
+  cursor: not-allowed !important;
+  opacity: 0.6;
+}
+
+/* ===== 统一自定义滚动条（webkit 浏览器） ===== */
+
+/* 整个卡片的滚动条 */
+#ciba-video-ocr-card::-webkit-scrollbar {
+  width: 4px;
+}
+#ciba-video-ocr-card::-webkit-scrollbar-track {
+  background: transparent;
+}
+#ciba-video-ocr-card::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  transition: background 0.2s;
+}
+#ciba-video-ocr-card::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* 单词详情区的滚动条（更细一点） */
+.ciba-video-ocr-word-detail::-webkit-scrollbar {
+  width: 4px;
+}
+.ciba-video-ocr-word-detail::-webkit-scrollbar-track {
+  background: transparent;
+}
+.ciba-video-ocr-word-detail::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 2px;
+  transition: background 0.2s;
+}
+.ciba-video-ocr-word-detail::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Firefox 兼容（用 thin + 颜色） */
+#ciba-video-ocr-card,
+.ciba-video-ocr-word-detail {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+/* ===================== 🆕 YouTube 视频内字幕覆盖层（LR 风格） ===================== */
+/* 挂在 #movie_player 内部：全屏/剧场模式天然跟随播放器 */
+.ciba-yt-video-overlay {
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 64px !important; /* 控制栏上方 */
+  z-index: 60 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 10px !important;
+  pointer-events: none !important; /* 容器不挡播放器操作，仅文字/卡片可点 */
+  font-family: "YouTube Noto", Roboto, Arial, sans-serif !important;
+}
+
+/* 广告时段隐藏（YouTube 会在播放器上加 .ad-showing） */
+.ad-showing .ciba-yt-video-overlay { display: none !important; }
+
+/* 有我们的字幕在显示时，视觉隐藏原生 CC（不动播放器 CC 开关状态） */
+#movie_player.ciba-hide-native-caps .ytp-caption-window-container { display: none !important; }
+
+/* 字幕行：大号白字带描边，单词可点 */
+.ciba-yt-overlay-line {
+  pointer-events: auto !important;
+  max-width: 88% !important;
+  text-align: center !important;
+
+  display: inline-block !important;
+  padding: 8px 18px !important;
+  border-radius: 12px !important;
+  background: rgba(0,0,0,0.32) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255,255,255,0.14) !important;
+  box-shadow: 0 6px 20px -6px rgba(0,0,0,0.5) !important;
+
+  font-size: 24px !important;
+  line-height: 1.4 !important;
+  font-weight: 500 !important;
+  color:#fff !important;
+  text-shadow:0 1px 2px rgba(0,0,0,0.9) !important;
+}
+.ciba-yt-overlay-line:empty {
+  display: none !important;
+}
+/* 字幕加载中提示（比字幕行字号小、颜色弱化） */
+.ciba-yt-overlay-line .ciba-yt-overlay-loading {
+  display: inline-block !important;
+  font-size: 15px !important;
+  font-weight: 400 !important;
+  color: #cbd5e1 !important;
+  cursor: default !important;
+}
+/* 机器翻译行：原文下方第二行，弱化显示 */
+.ciba-yt-overlay-line .ciba-yt-overlay-mt {
+  font-size: 17px !important;
+  font-weight: 400 !important;
+  color: #a5b4fc !important;
+  margin-top: 6px !important;
+  line-height: 1.35 !important;
+  cursor: default !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9) !important;
+}
+.ciba-yt-overlay-line .ciba-video-ocr-word {
+  cursor: pointer !important;
+  /* LR 风格：白字（覆盖全局 .ciba-video-ocr-word 的蓝色 #4fc3f7） */
+  color: #ffffff !important;
+  /* 去掉全局继承的蓝色虚线下划线 */
+  border-bottom: none !important;
+  border-radius: 4px !important;
+  transition: background 0.15s ease !important;
+}
+.ciba-yt-overlay-line .ciba-video-ocr-word:hover {
+  /* 悬停：半透明白底高亮（LR 风格），不用蓝色 */
+  background: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* 释义卡：点词后出现在字幕行上方，样式与 OCR 结果卡 (#ciba-video-ocr-card) 一致 */
+.ciba-yt-overlay-card {
+  pointer-events: auto !important;
+  display: none !important;
+  width: 380px !important;
+  max-width: 86% !important;
+  /* 完全不透明深色实底，显式禁用毛玻璃（含 -webkit 前缀，覆盖任何来源） */
+  background: rgb(15, 23, 42) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid rgba(56, 189, 248, 0.4) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8) !important;
+  padding: 14px 14px 12px !important;
+  position: relative !important;
+  text-align: left !important;
+  color: #f8fafc !important;
+  /* 固定最小高度：避免加载/释义/二维码不同内容高度跳变，卡从下往上顶开 */
+  min-height: 300px !important;
+}
+.ciba-yt-overlay-card--show {
+  display: flex !important;
+  flex-direction: column !important;
+}
+/* 释义区撑满剩余空间，按钮固定在卡底部 */
+.ciba-yt-overlay-card--show .ciba-yt-overlay-detail {
+  flex: 1 1 auto !important;
+}
+.ciba-yt-overlay-card--show .ciba-yt-overlay-add-btn {
+  margin-top: auto !important;
+}
+/* 卡内释义区：不套全局的深色小盒子（rgba(0,0,0,.35) 底+内边距），直接透出卡片底色 */
+.ciba-yt-overlay-card .ciba-video-ocr-word-detail {
+  background: transparent !important;
+  padding: 0 !important;
+  margin-top: 0 !important;
+}
+.ciba-yt-overlay-card__close {
+  position: absolute !important;
+  top: 6px !important;
+  right: 10px !important;
+  color: #94a3b8 !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  padding: 2px 6px !important;
+  border-radius: 6px !important;
+  transition: all 0.15s ease !important;
+}
+.ciba-yt-overlay-card__close:hover {
+  color: #f8fafc !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+.ciba-yt-overlay-detail {
+  display: block !important;
+  max-height: 200px !important;
+  overflow-y: auto !important;
+  font-size: 13px !important;
+  color: #f8fafc !important;
+  padding-right: 20px !important; /* 避开右上角关闭按钮 */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+.ciba-yt-overlay-add-btn { margin-top: 10px !important; }
+
+/* ===== 悬停快显释义气泡（只显示一条释义，无音标） ===== */
+.ciba-yt-hover-tip {
+  position: absolute !important;
+  transform: translate(-50%, -100%) !important;
+  max-width: 280px !important;
+  padding: 8px 12px !important;
+  background: rgb(15, 23, 42) !important;
+  border: 1px solid rgba(56, 189, 248, 0.4) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.8) !important;
+  color: #f8fafc !important;
+  font-size: 15px !important;
+  line-height: 1.5 !important;
+  text-align: center !important;
+  z-index: 80 !important;
+  pointer-events: none !important; /* 不挡鼠标，纯展示 */
+  display: none !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+}
+.ciba-yt-hover-tip--show { display: block !important; }
+
+/* ===== 播放器控制栏按钮 + 弹出菜单 ===== */
+.ciba-yt-toolbar-btn {
+  position: relative !important;
+  opacity: 0.9 !important;
+}
+.ciba-yt-toolbar-btn--off {
+  opacity: 0.9 !important;
+}
+.ciba-yt-toolbar-btn__icon {
+  /* 水平居中（YouTube 按钮内联元素默认偏左） */
+  display: block !important;
+  margin: 0 auto !important;
+  width: 26px !important;
+  height: 26px !important;
+  border-radius: 4px !important;
+  object-fit: contain !important;
+}
+.ciba-yt-toolbar-btn__badge {
+  /* 角标覆盖图标右下角 */
+  position: absolute !important;
+  right: -2px !important;
+  bottom: 2px !important;
+  background: #38bdf8 !important;
+  color: #0f172a !important;
+  font-size: 8px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  padding: 2px 3px !important;
+  border-radius: 3px !important;
+  border: 1px solid rgba(0, 0, 0, 0.5) !important; /* 描边与图标分离 */
+  pointer-events: none !important;
+}
+.ciba-yt-toolbar-btn__badge--off {
+  background: #64748b !important;
+  color: #f8fafc !important;
+}
+
+/* 弹出菜单：挂在 #movie_player 内，控制栏上方 */
+.ciba-yt-menu {
+  position: absolute !important;
+  right: 12px !important;
+  bottom: 64px !important;
+  width: 240px !important;
+  display: none !important;
+  background: rgb(15, 23, 42) !important;
+  border: 1px solid rgba(56, 189, 248, 0.4) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8) !important;
+  padding: 6px !important;
+  z-index: 70 !important;
+  pointer-events: auto !important;
+}
+.ciba-yt-menu--show { display: block !important; }
+/* 顶部说明文字（仅展示，不可点击） */
+.ciba-yt-menu__hint {
+  padding: 10px 10px 8px !important;
+  color: #94a3b8 !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  user-select: none !important;
+  cursor: default !important;
+}
+.ciba-yt-menu__item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 10px 10px !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  color: #f8fafc !important;
+  font-size: 13px !important;
+  user-select: none !important;
+}
+.ciba-yt-menu__item:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+.ciba-yt-menu__icon {
+  flex: none !important;
+  color: #cbd5e1 !important;
+}
+.ciba-yt-menu__icon--right {
+  margin-left: auto !important;
+  color: #94a3b8 !important;
+}
+.ciba-yt-menu__label {
+  flex: 1 1 auto !important;
+}
+/* 开关 */
+.ciba-yt-menu__switch {
+  flex: none !important;
+  width: 34px !important;
+  height: 18px !important;
+  border-radius: 9px !important;
+  background: #475569 !important;
+  position: relative !important;
+  transition: background 0.15s ease !important;
+}
+.ciba-yt-menu__switch--on {
+  background: #38bdf8 !important;
+}
+.ciba-yt-menu__switch-knob {
+  position: absolute !important;
+  top: 2px !important;
+  left: 2px !important;
+  width: 14px !important;
+  height: 14px !important;
+  border-radius: 50% !important;
+  background: #fff !important;
+  transition: left 0.15s ease !important;
+}
+.ciba-yt-menu__switch--on .ciba-yt-menu__switch-knob {
+  left: 18px !important;
+}
