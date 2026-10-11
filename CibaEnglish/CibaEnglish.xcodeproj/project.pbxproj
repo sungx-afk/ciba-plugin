@@ -303,7 +303,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "if [ \"$CONFIGURATION\" != \"Debug\" ]; then\n  echo \"Skip deploy: only Debug builds deploy to /Applications, Archive is not affected\"\n  exit 0\nfi\nDST=\"/Applications/CibaEnglish.app\"\nSRC=\"${BUILT_PRODUCTS_DIR}/CibaEnglish.app\"\necho \"🚀 Deploying: $SRC → $DST\"\nif [ ! -d \"$SRC\" ]; then\n  echo \"❌ 源 .app 不存在: $SRC\"; exit 1\nfi\nif [ -d \"$DST\" ]; then\n  rm -rf \"$DST\" || { echo \"❌ 无法删除旧的 $DST\"; exit 1; }\nfi\nditto \"$SRC\" \"$DST\" && echo \"✅ 已部署到 $DST\" || { echo \"❌ 部署失败\"; exit 1; }\n";
+			shellScript = "if [ \"$CONFIGURATION\" != \"Debug\" ]; then\n  echo \"Skip deploy: only Debug builds deploy to /Applications, Archive is not affected\"\n  exit 0\nfi\nDST=\"/Applications/CibaEnglish.app\"\nSRC=\"${BUILT_PRODUCTS_DIR}/CibaEnglish.app\"\necho \"🚀 Deploying: $SRC → $DST\"\nif [ ! -d \"$SRC\" ]; then\n  echo \"❌ 源 .app 不存在: $SRC\"; exit 1\nfi\nif [ -d \"$DST\" ]; then\n  rm -rf \"$DST\" || { echo \"❌ 无法删除旧的 $DST\"; exit 1; }\nfi\nditto \"$SRC\" \"$DST\" && echo \"✅ 已部署到 $DST\" || { echo \"❌ 部署失败\"; exit 1; }\ncodesign --force --sign \"${EXPANDED_CODE_SIGN_IDENTITY:--}\" --entitlements \"$SRCROOT/CibaEnglish/CibaEnglish.entitlements\" --options runtime \"$DST\" && echo \"✅ 已重签名部署副本\" || echo \"⚠️ 重签名失败\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

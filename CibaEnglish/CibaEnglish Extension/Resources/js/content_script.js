@@ -1,5 +1,14 @@
 // ========== 改动 1：把原脚本全部包进 initCibaPlugin 函数 ==========
 function initCibaPlugin() {
+// 防重复注入守卫：Safari 在扩展更新/重新启用后可能向同一页面再次注入本脚本，
+// 旧实例仍在就会双击弹出两个窗口。window 标记防同 world 重注入，
+// <html> 上的 data 属性防跨 world / 双扩展注入（DOM 是共享的）。
+if (window.__cibaInjected === true || document.documentElement.hasAttribute('data-ciba-injected')) {
+  console.log('[ciba] 检测到重复注入，跳过本次初始化');
+  return;
+}
+window.__cibaInjected = true;
+document.documentElement.setAttribute('data-ciba-injected', '1');
 var server_api = 'https://cibaen.com/api'
 var old_server_api = 'https://www.cibaen.com/api'
 var ANKI_DATA_SPLIT = `\x1f` //0x1f为anki数据分隔符
@@ -146,18 +155,32 @@ qrcodeTextTip.style.marginTop = "12px";
 wechatLoginLayer.appendChild(qrcodeTextTip)
 
 //通过 Apple 登录入口（仅 Safari + appleLoginEnabled 开启时显示，见 refreshAppleLoginBtn）
+//样式对齐 popup.css 的 .apple-login-btn
 var appleLoginBtn = document.createElement("div");
-appleLoginBtn.innerText = "通过 Apple 登录";
+appleLoginBtn.innerHTML =
+  '<svg viewBox="0 0 384 512" aria-hidden="true" style="width:15px;height:15px;fill:#fff;margin-top:-1px;flex-shrink:0;">' +
+  '<path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>' +
+  '<span>通过 Apple 登录</span>';
 appleLoginBtn.style.display = "none";
-appleLoginBtn.style.marginTop = "10px";
-appleLoginBtn.style.padding = "7px 18px";
-appleLoginBtn.style.borderRadius = "6px";
+appleLoginBtn.style.boxSizing = "border-box";
+appleLoginBtn.style.width = "100%";
+appleLoginBtn.style.marginTop = "14px";
+appleLoginBtn.style.padding = "9px 0";
+appleLoginBtn.style.borderRadius = "8px";
 appleLoginBtn.style.backgroundColor = "#000";
 appleLoginBtn.style.color = "#fff";
-appleLoginBtn.style.fontSize = "13px";
+appleLoginBtn.style.fontSize = "14px";
+appleLoginBtn.style.fontWeight = "500";
 appleLoginBtn.style.cursor = "pointer";
 appleLoginBtn.style.textAlign = "center";
 appleLoginBtn.style.userSelect = "none";
+appleLoginBtn.style.display = "none";
+appleLoginBtn.style.alignItems = "center";
+appleLoginBtn.style.justifyContent = "center";
+appleLoginBtn.style.gap = "8px";
+appleLoginBtn.style.transition = "opacity 0.2s";
+appleLoginBtn.onmouseenter = function () { appleLoginBtn.style.opacity = "0.85"; };
+appleLoginBtn.onmouseleave = function () { appleLoginBtn.style.opacity = "1"; };
 appleLoginBtn.onclick = function () {
   // 统一走 service worker 创建 tab（与 popup / video_ocr_content 入口保持一致）
   var relay = '';
@@ -849,14 +872,14 @@ function refreshAppleLoginBtn(){
     appleLoginChecked = true
     try {
       var config = JSON.parse(xhr.responseText)
-      if (config && config.appleLoginEnabled) appleLoginBtn.style.display = "block"
+      if (config && config.appleLoginEnabled) appleLoginBtn.style.display = "flex"
     } catch (e) {
-      appleLoginBtn.style.display = "block" // 解析失败也按 fail-open 处理
+      appleLoginBtn.style.display = "flex" // 解析失败也按 fail-open 处理
     }
   }
   xhr.onerror = function(){
     appleLoginChecked = true
-    appleLoginBtn.style.display = "block"
+    appleLoginBtn.style.display = "flex"
   }
   xhr.send()
 }

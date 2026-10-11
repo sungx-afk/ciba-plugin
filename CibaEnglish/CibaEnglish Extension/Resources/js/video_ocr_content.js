@@ -1,6 +1,16 @@
 (function () {
   console.log("视频字幕自动 OCR 助手 Content Script 已装载");
 
+  // 防重复注入守卫：Safari 扩展更新/重新启用后可能向同一页面再次注入，
+  // 会造成双份悬浮工具栏（同因 content_script.js 的双窗口问题）。
+  // window 标记防同 world 重注入；<html> 的 data 属性防跨 world/双扩展注入。
+  if (window.__cibaVideoInjected === true || document.documentElement.hasAttribute('data-ciba-video-injected')) {
+    console.log("[ciba-video] 检测到重复注入，跳过本次初始化");
+    return;
+  }
+  window.__cibaVideoInjected = true;
+  document.documentElement.setAttribute('data-ciba-video-injected', '1');
+
   // ===== 配置 & 全局状态 =====
   const SERVER_API = 'https://www.cibaen.com/api';
   let audioElement = null;
