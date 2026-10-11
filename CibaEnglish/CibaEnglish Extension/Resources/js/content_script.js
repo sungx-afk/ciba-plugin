@@ -70,11 +70,13 @@ document.documentElement.setAttribute('data-ciba-plugin-installed', '1');
 
 //微信登录
 var wechatLoginLayer = document.createElement("div");
-wechatLoginLayer.style.position = "absolute";
+// fixed 锚定视口：页面滚动时浮层始终居中可见（此前用 absolute + 一次性 scrollY/srollX 偏移，
+// 滚动后浮层会留在文档上方，用户点到下方单词时看不到登录提示）
+wechatLoginLayer.style.position = "fixed";
 wechatLoginLayer.style.zIndex = "9999999999";
 
-wechatLoginLayer.style.top = window.scrollY + (window.innerHeight - 320) / 2 + "px";
-wechatLoginLayer.style.left = window.scrollX + (window.innerWidth - 320) / 2 + "px";
+wechatLoginLayer.style.top = (window.innerHeight - 320) / 2 + "px";
+wechatLoginLayer.style.left = (window.innerWidth - 320) / 2 + "px";
 wechatLoginLayer.style.width = "320px";
 // wechatLoginLayer.style.height = "320px";
 wechatLoginLayer.style.flexDirection = "column";

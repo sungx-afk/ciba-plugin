@@ -34,19 +34,12 @@ document.addEventListener('DOMContentLoaded', function () {
       btn.addEventListener("click", function() {
         if (!checkbox.checked) return;
         chrome.storage.local.set({[PRIVACY_KEY]: true}, function() {
-          // 同意后：隐藏告知条，按当前登录状态显示对应 card
+          // 同意后：隐藏告知条，恢复登录卡可见，走完整初始化
+          // （initApp 含二维码 / 密码登录 / Apple 登录 / 重登按钮 / 禁用开关等全部逻辑，
+          //   否则首次会话这些都不会执行——Apple 按钮不显示的根因）
           notice.style.display = "none";
-          getLocalToken().then(function(value) {
-            if (value && value.ciba_token) {
-              // 已有 token：显示已登录卡
-              document.getElementById("logged").classList.remove("hide");
-              handleQrcode(value.ciba_token);
-            } else {
-              // 未登录：显示二维码登录卡，并拉取二维码
-              document.getElementById("not_logged").classList.remove("hide");
-              fetchQrCodeKey();
-            }
-          });
+          document.getElementById("not_logged").classList.remove("hide");
+          initApp();
         });
       });
       return; // 🆕 未同意，不往下执行
