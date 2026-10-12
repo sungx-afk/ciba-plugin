@@ -230,28 +230,6 @@ body {
     opacity: 0.85;
 }
 
-/* ===== Apple 登录权限诊断条（仅 Safari，未授权 cibaen.com 时显示） ===== */
-.apple-permission-warning {
-    margin-top: 10px;
-    padding: 10px 12px;
-    background: #fef2f2;
-    border: 1px solid #fecaca;
-    border-radius: 8px;
-    color: #991b1b;
-}
-.apple-permission-warning__title {
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 4px;
-}
-.apple-permission-warning__text {
-    font-size: 11px;
-    line-height: 1.5;
-}
-.apple-permission-warning__text b {
-    color: #7f1d1d;
-}
-
 .apple-login-btn svg {
     width: 15px;
     height: 15px;

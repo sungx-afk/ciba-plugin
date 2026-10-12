@@ -63,9 +63,11 @@ function initApp() {
       fetchQrCodeKey()
     }
   })
-  fetch('https://cibaen.com/client-config.json')  // 返回 { "reviewLoginEnabled": true/false, "appleLoginEnabled": true/false }
-  .then(r => r.json())
-  .then(config => {
+  // 配置来源：content script 在 cibaen.com 页面 fetch 同源资源后写入 chrome.storage
+  // （这样 popup 不需要向 Safari 申请 cibaen.com 的 host 权限——cbaen.com 完全不出现在 manifest 里）
+  // 未访问过 cibaen.com 时 storage 为空，使用 fail-open 默认值（Apple 按钮显示、密码登录区隐藏）
+  chrome.storage.local.get('ciba_client_config', function (result) {
+    var config = result && result.ciba_client_config || { appleLoginEnabled: true, reviewLoginEnabled: false };
     if (config.reviewLoginEnabled) {
       document.getElementById('password-login-section').style.display = 'flex';
       setupPasswordLogin();
@@ -74,10 +76,6 @@ function initApp() {
     }
     // Apple 登录：仅 Safari 扩展 + 服务端开关同时满足才显示
     setupAppleLogin(!!config.appleLoginEnabled);
-  })
-  .catch(() => {
-    // 配置拉取失败：Safari 上 fail-open 照常显示（App Store 审核要求 Apple 登录常显），Chrome 不显示
-    setupAppleLogin(true);
   });
 
   document.getElementById('relogin').addEventListener('click', () => {
@@ -208,53 +206,21 @@ function setupAppleLogin(appleLoginEnabled) {
       btn.addEventListener('click', startAppleLogin);
       btn._appleBound = true;
     }
-    // 权限诊断：Safari 没有 API 能查"网站访问权限"（chrome.permissions.contains 只反映
-    // manifest 声明，不代表用户在偏好设置里的 per-site 授权）。改用实际注入结果反推：
-    // 向已存在的 cibaen.com 标签页的 bridge 发 ping，无响应则判定无权限。
-    checkAppleBridgeReachable();
+    // 不再调用 checkAppleBridgeReachable()：去掉所有 cibaen.com host 权限后，
+    // chrome.tabs.sendMessage 到 cibaen.com 标签必然失败，ping 永远超时，会误报红条。
+    // 登录是否成功由 chrome.storage.onChanged 监听 ciba_token 变化来兜底，更可靠。
   } else {
     btn.style.display = 'none';
   }
 }
 
-// 探测扩展对 cibaen.com 是否真的生效（能不能注入 content script）。
-// 有 cibaen.com/apple-login 标签页时才可判断；没有标签页则无从判断，保持静默不误报。
-//
-// 注意两处 Safari 行为，决定了这里不能用 tabs.query 的 url 过滤：
-//   1) 站点访问被拒时，url 过滤可能直接匹配不到该标签页 → 会静默失效（正是最该报警的场景）
-//   2) 目标页没有 content script 时，sendMessage 可能同步抛错 → 后面的 setTimeout 就注册不上
-// 因此改为：取全部标签页自行按 URL 过滤；先注册超时再发 ping；sendMessage 包 try/catch。
-function checkAppleBridgeReachable() {
-  if (!chrome.tabs || !chrome.tabs.query || !chrome.tabs.sendMessage) return;
-  function showWarn() {
-    var warn = document.getElementById('apple-permission-warning');
-    if (warn) warn.style.display = 'block';
-  }
-  chrome.tabs.query({}, function (tabs) {
-    var targets = (tabs || []).filter(function (t) {
-      return typeof t.url === 'string' && /^https:\/\/(www\.)?cibaen\.com\/apple-login/.test(t.url);
-    });
-    console.log('[ciba-popup] cibaen 登录页标签数 =', targets.length);
-    if (!targets.length) return;
-    var got = false;
-    var timer = setTimeout(function () {
-      if (got) return;
-      console.log('[ciba-popup] bridge 无响应，显示权限提示条');
-      showWarn();
-    }, 1200);
-    targets.forEach(function (t) {
-      try {
-        chrome.tabs.sendMessage(t.id, { action: 'ciba-bridge-ping' }, function (resp) {
-          if (chrome.runtime.lastError) console.log('[ciba-popup] ping lastError =', chrome.runtime.lastError.message);
-          if (resp && resp.ok) { got = true; clearTimeout(timer); }
-        });
-      } catch (e) {
-        console.log('[ciba-popup] ping 同步异常', e);
-      }
-    });
-  });
-}
+// ===== Apple 登录入口（Safari）=====
 
+// ===== Apple 登录入口（Safari）=====
+// 零 host 权限方案：cibaen.com 完全不在 host_permissions / optional_host_permissions 里。
+// bridge 靠 content_scripts matches 自动注入；popup 创建 tab 用 chrome.tabs.create
+// （不需要 host 权限）；popup 通过 chrome.storage.onChanged 监听 ciba_token 变化来识别登录。
+// 因此用户全程不会遇到任何授权提示，体验与 Immersive Translate 一致。
 function startAppleLogin() {
   // relay：随机 key，登录页据此向后端关联本次登录
   var relay = '';

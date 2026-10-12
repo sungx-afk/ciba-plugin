@@ -875,6 +875,11 @@ function refreshAppleLoginBtn(){
     try {
       var config = JSON.parse(xhr.responseText)
       if (config && config.appleLoginEnabled) appleLoginBtn.style.display = "flex"
+      // 同步给 popup 用：content script 在 cibaen.com 页面里能直接 fetch 同源资源（不需 host 权限），
+      // 把结果落到 chrome.storage，popup 从 storage 读取，避免向 Safari 申请 cibaen.com 的 host 权限
+      if (config) {
+        try { chrome.storage.local.set({ ciba_client_config: config }) } catch (e) {}
+      }
     } catch (e) {
       appleLoginBtn.style.display = "flex" // 解析失败也按 fail-open 处理
     }
