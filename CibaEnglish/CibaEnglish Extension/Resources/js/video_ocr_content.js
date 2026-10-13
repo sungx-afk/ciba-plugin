@@ -13,6 +13,13 @@
 
   // ===== 配置 & 全局状态 =====
   const SERVER_API = 'https://www.cibaen.com/api';
+
+  // ===== HTML 净化：所有含远程数据（OCR 文本 / 接口 JSON）的 HTML 赋值统一经 DOMPurify 净化 =====
+  // DOMPurify 为打包在扩展内的本地库（js/vendor/purify.min.js），不加载任何远程代码
+  function setHtml(el, html) {
+    el.innerHTML = DOMPurify.sanitize(html);
+  }
+
   let audioElement = null;
   let currentWord = '';
   let currentSentence = '';
@@ -212,7 +219,7 @@
         const html = text.trim().replace(/\b([a-zA-Z]+(?:[''][a-zA-Z]+)?)\b/g,
           '<span class="ciba-video-ocr-word" data-word="$1">$1</span>'
         );
-        textEl.innerHTML = html;
+        setHtml(textEl, html);
         textEl.addEventListener('click', (e) => {
           const span = e.target.closest('.ciba-video-ocr-word');
           if (!span) return;
@@ -650,7 +657,7 @@
           try {
             const resp = JSON.parse(xhr.responseText);
             const w = resp.word;
-            if (!w) { detailEl.innerHTML = `<div class="ciba-video-ocr-word-detail__error">未找到该单词</div>`; return; }
+            if (!w) { setHtml(detailEl, `<div class="ciba-video-ocr-word-detail__error">未找到该单词</div>`); return; }
 
             const pronEN = w.phEn ? `[${w.phEn}]` : '';
             const enAudio = w.phEnMp3 || '';
@@ -667,7 +674,7 @@
               }
             }
 
-            detailEl.innerHTML = `
+            setHtml(detailEl, `
               <div class="ciba-video-ocr-word-detail__word">${w.name || word}</div>
               <div class="ciba-video-ocr-word-detail__pron">
                 ${pronEN ? `<span>英 ${pronEN}</span> <span class="ciba-video-ocr-word-detail__audio" data-url="${enAudio}">🔊</span>` : ''}
@@ -675,7 +682,7 @@
               </div>
               <div class="ciba-video-ocr-word-detail__interpret">${interpretHtml}</div>
               ${isAdded ? `<div class="ciba-video-ocr-word-detail__added">✅ 已在生词本</div>` : ''}
-            `;
+            `);
 
             detailEl.querySelectorAll('.ciba-video-ocr-word-detail__audio').forEach(el => {
               el.addEventListener('click', () => {
@@ -684,12 +691,12 @@
               });
             });
           } catch (e) {
-            detailEl.innerHTML = `<div class="ciba-video-ocr-word-detail__error">解析失败</div>`;
+            setHtml(detailEl, `<div class="ciba-video-ocr-word-detail__error">解析失败</div>`);
           }
         };
         xhr.send();
       }).catch(err => {
-        detailEl.innerHTML = `<div class="ciba-video-ocr-word-detail__error">获取token失败: ${err.message}</div>`;
+        setHtml(detailEl, `<div class="ciba-video-ocr-word-detail__error">获取token失败: ${err.message}</div>`);
       });
     });
   }
@@ -902,7 +909,8 @@
       if (xhr.readyState !== 4) return;
       try {
         const resp = JSON.parse(xhr.responseText);
-        if (resp && resp.result == 0) {
+        // 二维码 URL 由服务器下发：仅接受 https 链接，拒绝其它协议
+        if (resp && resp.result == 0 && typeof resp.url === 'string' && /^https:\/\//i.test(resp.url)) {
           imgEl.src = resp.url;
           imgEl.style.display = 'block';
           statusEl.textContent = '请使用微信扫码';

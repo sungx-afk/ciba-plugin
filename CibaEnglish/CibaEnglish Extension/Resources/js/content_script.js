@@ -26,6 +26,12 @@ var modelList = [];
 var templateList = [];
 var fields = [];
 
+// HTML 净化：含远程数据（接口 JSON / 服务器错误消息）的 HTML 赋值统一经 DOMPurify 净化
+// DOMPurify 为打包在扩展内的本地库（js/vendor/purify.min.js），不加载任何远程代码
+function setHtml(el, html) {
+  el.innerHTML = DOMPurify.sanitize(html);
+}
+
 //检测中文字符个数
 function detectCnCount(text){
   let chineseCount = 0;
@@ -777,7 +783,7 @@ function searchWord(word){
               </div>
           `
 
-          translateDiv.innerHTML = wordCardTemplate
+          setHtml(translateDiv, wordCardTemplate)
 
           if (enAudioUrl){
             let enAudioImg = document.getElementById("enAudioImg")
@@ -1294,7 +1300,7 @@ function showToast(msg, type = 'success', duration = 2000) {
       </div>
     </div>`
 
-    document.body.insertAdjacentHTML('beforeend', toastNode);
+    document.body.insertAdjacentHTML('beforeend', DOMPurify.sanitize(toastNode));
     setTimeout(function () {
       let node = document.getElementById("ciba_toast");
       node.parentNode.removeChild(node);

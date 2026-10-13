@@ -3,6 +3,7 @@ var finalToken = ''
 var qrcodeKey = ''
 var refreshTimer = null
 var PRIVACY_KEY = "privacyAgreed"  // 🆕 隐私同意 storage key
+var appleLoginEnabledCached = false  // 🆕 Apple 登录开关缓存：登录态切换时供 refreshAppleLoginBtn 重新计算可见性
 
 function getLocalToken(){
   return new Promise((resolve, reject) => {
@@ -86,6 +87,7 @@ function initApp() {
     document.getElementById("logged").classList.add("hide");
     document.getElementById("not_logged").classList.remove("hide");
     chrome.storage.local.remove('ciba_token', function(){});
+    refreshAppleLoginBtn()  // 🆕 切回未登录后恢复 Apple 按钮可见
   })
 }
 
@@ -180,6 +182,7 @@ function handleQrcode(token){
   document.getElementById("not_logged").classList.add("hide");
   document.getElementById("logged").classList.remove("hide");
   stopRefreshQrCode()
+  refreshAppleLoginBtn()  // 🆕 切到已登录后隐藏 Apple 按钮
 }
 
 function stopRefreshQrCode() {
@@ -195,12 +198,20 @@ function isSafariExt() {
 }
 
 function setupAppleLogin(appleLoginEnabled) {
+  // 🆕 仅缓存开关，刷新由 refreshAppleLoginBtn 完成；这样 handleQrcode / relogin / onChanged
+  // 三个登录态切换点都能复用同一份可见性逻辑，避免 initApp 里 config 与 token 两个异步
+  // 任务完成顺序不确定导致 Apple 按钮残留显示
+  appleLoginEnabledCached = !!appleLoginEnabled;
+  refreshAppleLoginBtn();
+}
+
+function refreshAppleLoginBtn() {
   var btn = document.getElementById('apple-login-btn');
   if (!btn) return;
   // 仅在 Safari 扩展 + 开关开启 + 当前未登录时显示（已登录态下按钮与"已登录"卡独立，保持隐藏）
   var notLoggedEl = document.getElementById('not_logged');
   var isCurrentlyNotLogged = notLoggedEl && !notLoggedEl.classList.contains('hide');
-  if (appleLoginEnabled && isSafariExt() && isCurrentlyNotLogged) {
+  if (appleLoginEnabledCached && isSafariExt() && isCurrentlyNotLogged) {
     btn.style.display = 'flex';
     if (!btn._appleBound) {
       btn.addEventListener('click', startAppleLogin);
@@ -282,3 +293,21 @@ function setupPasswordLogin() {
     xhr.send(JSON.stringify({ loginName: username, password: password }));
   });
 }
+
+// 🆕 监听 ciba_token 变化：跨 tab 登录、Apple 登录异步写入、被其他组件 clear 等场景下，
+// 同步 popup 的登录态与 Apple 按钮可见性（之前 initApp 里那段注释承诺了此兜底，但实际未实现）
+chrome.storage.onChanged.addListener(function (changes, area) {
+  if (area !== 'local') return;
+  if (!changes.ciba_token) return;
+  var newVal = changes.ciba_token.newValue;
+  if (newVal) {
+    handleQrcode(newVal);
+  } else {
+    // token 被清空：切回未登录态
+    finalToken = '';
+    document.getElementById("logged").classList.add("hide");
+    document.getElementById("not_logged").classList.remove("hide");
+    stopRefreshQrCode();
+    fetchQrCodeKey();
+  }
+});
