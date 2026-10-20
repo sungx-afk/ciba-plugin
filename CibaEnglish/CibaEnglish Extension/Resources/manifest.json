@@ -30,7 +30,7 @@
         "https://www.cibaen.com/apple-login*"
       ],
       "js": ["js/apple_login_bridge.js"],
-      "run_at": "document_idle"
+      "run_at": "document_start"
     },
     {
       "matches": ["<all_urls>"],
