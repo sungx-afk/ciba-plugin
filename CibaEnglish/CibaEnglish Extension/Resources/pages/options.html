@@ -1,46 +1,108 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>配置页</title>
-		<script src="../js/options.js"></script>
-		<link rel="stylesheet" href="../css/options.css"/>
-		</head>
-	<body>
-    <div class="group-wrapper">
-			<div class="title">1. 英文单词选中文本方式</div>
-			<div class="raido-group-wrapper" style="display: none;">
-				<div class="radio-wrapper">
-					<input type="radio" name="word_click" id="word_click" value="0"><label for="word_click">单击单词取词</label>
-				</div>
-				<div class="radio-wrapper">
-					<input type="radio" name="word_click" id="word_doubleclick" value="1"><label for="word_doubleclick">双击单词取词</label>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>糍粑设置</title>
+	<link rel="stylesheet" href="../css/options.css"/>
+</head>
+<body>
+	<main class="page">
+		<header class="page-header">
+			<img src="../icons/icon-48.png" alt="" class="page-header__logo">
+			<div class="page-header__text">
+				<h1>糍粑设置</h1>
+				<p class="page-header__sub">选词与视频字幕识别</p>
+			</div>
+		</header>
+
+		<!-- ===== 1. 选词设置 ===== -->
+		<section class="card">
+			<div class="card__head">
+				<span class="card__icon" aria-hidden="true">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M5 7V5h14v2"/><path d="M12 5v14"/><path d="M9 19h6"/>
+					</svg>
+				</span>
+				<div class="card__head-text">
+					<h2 class="card__title">选词设置</h2>
+					<p class="card__desc">双击单词取词，鼠标选中文本后滑动取词</p>
 				</div>
 			</div>
-			<p style="font-size: 14px;">• 双击单词取词</p>
-			<p style="font-size: 14px;">• 鼠标选中后滑动取词</p>
-    </div>
-		<div class="group-wrapper">
-			<div class="title">2. 单词翻译和记忆卡弹出方式</div>
-			<div class="sub-title">英文单词</div>
-			<div class="raido-group-wrapper">
-				<div class="radio-wrapper">
-					<input type="radio" name="word_popup" id="word_popup_direct" value="0"><label for="word_popup_direct">选中单词后直接弹出</label>
-				</div>
-				<div class="radio-wrapper">
-					<input type="radio" name="word_popup" id="word_popup_image" value="1"><label for="word_popup_image">选中单词后点击图标再弹出</label>
+
+			<div class="card__body">
+				<fieldset class="option-group">
+					<legend class="option-group__legend">英文单词弹出方式</legend>
+					<label class="option" for="word_popup_direct">
+						<input type="radio" name="word_popup" id="word_popup_direct" value="0">
+						<span class="option__mark" aria-hidden="true"></span>
+						<span class="option__label">选中单词后直接弹出</span>
+					</label>
+					<label class="option" for="word_popup_image">
+						<input type="radio" name="word_popup" id="word_popup_image" value="1">
+						<span class="option__mark" aria-hidden="true"></span>
+						<span class="option__label">选中单词后点击图标再弹出</span>
+					</label>
+				</fieldset>
+
+				<fieldset class="option-group">
+					<legend class="option-group__legend">句子 / 选中文本弹出方式</legend>
+					<label class="option" for="sentence_popup_image">
+						<input type="radio" name="sentence_popup" id="sentence_popup_image" value="0">
+						<span class="option__mark" aria-hidden="true"></span>
+						<span class="option__label">选中文本后点击图标再弹出</span>
+					</label>
+					<label class="option" for="sentence_popup_direct">
+						<input type="radio" name="sentence_popup" id="sentence_popup_direct" value="1">
+						<span class="option__mark" aria-hidden="true"></span>
+						<span class="option__label">选中文本后直接弹出</span>
+					</label>
+				</fieldset>
+			</div>
+		</section>
+
+		<!-- ===== 2. 视频字幕 OCR 设置 ===== -->
+		<section class="card">
+			<div class="card__head">
+				<span class="card__icon" aria-hidden="true">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+						<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15h4"/><path d="M13 15h4"/>
+					</svg>
+				</span>
+				<div class="card__head-text">
+					<h2 class="card__title">视频字幕 OCR</h2>
+					<p class="card__desc">视频暂停时识别字幕，点词即可加入单词本</p>
 				</div>
 			</div>
-			<div class="sub-title">句子</div>
-			<div class="raido-group-wrapper">
-				<div class="radio-wrapper">
-					<input type="radio" name="sentence_popup" id="sentence_popup_image" value="0"><label for="sentence_popup_image">选中文本后点击图标再弹出</label>
+
+			<div class="card__body">
+				<div class="row">
+					<div class="row__text">
+						<span class="row__label" id="label-ocr-enabled">暂停时自动识别字幕</span>
+						<p class="row__desc">关闭后按空格键暂停视频不再自动识别字幕</p>
+					</div>
+					<label class="switch">
+						<input type="checkbox" id="toggle-enabled" checked aria-labelledby="label-ocr-enabled">
+						<span class="slider"></span>
+					</label>
 				</div>
-				<div class="radio-wrapper">
-					<input type="radio" name="sentence_popup" id="sentence_popup_direct" value="1"><label for="sentence_popup_direct">选中文本后直接弹出</label>
+
+				<div class="row">
+					<div class="row__text">
+						<span class="row__label" id="label-ocr-upload">添加单词本时上传视频截图</span>
+						<p class="row__desc">开启后，添加单词时会把当前视频画面截图一并保存到单词卡片</p>
+					</div>
+					<label class="switch">
+						<input type="checkbox" id="toggle-upload-screenshot" aria-labelledby="label-ocr-upload">
+						<span class="slider"></span>
+					</label>
 				</div>
 			</div>
-    </div>
-    <button class="save-btn" id="save_btn">保存</button>
-	</body>
+		</section>
+
+		<p class="page-foot">改动即时保存，无需手动确认</p>
+	</main>
+
+	<script src="../js/options.js"></script>
+</body>
 </html>
