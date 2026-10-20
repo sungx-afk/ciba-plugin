@@ -86,14 +86,12 @@
     const btns = document.querySelectorAll('.ciba-video-ocr-add-btn');
     if (!btns.length) return;
     chrome.storage.local.get('ciba_token', (result) => {
+      // 🆕 免登录：查词/字幕已可匿名使用；这里只改提示文案，按钮保持可点，
+      // 未登录时点它会弹出登录引导（保存到单词本才是需要登录的账户功能）
+      const title = result.ciba_token ? "添加到单词本" : "登录后保存到单词本";
       btns.forEach((addBtn) => {
-        if (result.ciba_token) {
-          addBtn.disabled = false;
-          addBtn.title = "添加到单词本";
-        } else {
-          addBtn.disabled = true;
-          addBtn.title = "请先登录后使用";
-        }
+        addBtn.disabled = false;
+        addBtn.title = title;
       });
     });
   }
@@ -613,42 +611,21 @@
 
       const isYtOverlay = !!(detailEl.closest && detailEl.closest('.ciba-yt-overlay-card'));
       detailEl.style.display = 'block';
+      detailEl.style.removeProperty('max-height');
       if (!isYtOverlay) {
         detailEl.style.height = '180px';
         detailEl.style.overflowY = 'auto';
-        detailEl.innerHTML = `<div class="ciba-video-ocr-word-detail__loading">数据获取中...</div>`;
-      } else {
-        // YT 覆盖层：未登录时要弹二维码，先不显示"数据获取中"
-        detailEl.innerHTML = '';
       }
+      detailEl.innerHTML = `<div class="ciba-video-ocr-word-detail__loading">数据获取中...</div>`;
 
       getToken().then((value) => {
-        if (!value || !value.ciba_token) {
-          // YouTube 覆盖层释义卡：二维码直接渲染进卡内释义区
-          if (isYtOverlay) {
-            detailEl.innerHTML = '';
-            detailEl.style.height = '';
-            detailEl.style.overflowY = '';
-            // 放开 CSS 里的 200px 限高，保证二维码 + Apple 登录按钮完整显示
-            detailEl.style.setProperty('max-height', '440px', 'important');
-            showLoginQR(detailEl, word, sentence, detailEl);
-          } else {
-            detailEl.style.display = 'none';
-            detailEl.style.height = '';
-            detailEl.style.overflowY = '';
-            showLoginQRInBody(word, sentence);
-          }
-          return;
-        }
-
-        // 已登录：恢复默认限高；YT 覆盖层此时才显示加载态
-        detailEl.style.removeProperty('max-height');
-        if (isYtOverlay) {
-          detailEl.innerHTML = `<div class="ciba-video-ocr-word-detail__loading">数据获取中...</div>`;
-        }
-
-        const token = value.ciba_token;
-        const url = `${SERVER_API}/words/search.json?token=${encodeURIComponent(token)}&wordName=${encodeURIComponent(word)}`;
+        // 🆕 免登录：查词释义属"非账户功能"，未登录时匿名查询（接口已支持无 token）。
+        // 登录门禁只保留在"添加到生词本"等账户功能上（见 addWord 相关逻辑）。
+        const token = (value && value.ciba_token) || '';
+        const params = new URLSearchParams();
+        if (token) params.set('token', token);
+        params.set('wordName', word);
+        const url = `${SERVER_API}/words/search.json?${params.toString()}`;
 
         const xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);
@@ -752,7 +729,10 @@
 
       getToken().then((value) => {
         if (!value || !value.ciba_token) {
-          showToast('请先登录糍粑账户', false);
+          // 🆕 免登录："保存到单词本"才是账户功能，仅在这里引导登录（字幕/查词已可匿名使用）
+          // 暂存待保存的词，登录成功后由 storage.onChanged 自动补保存
+          pendingSaveWord = { word: wordToSave, sentence: captionToSave };
+          showLoginQRInBody(wordToSave, captionToSave);
           return;
         }
 
@@ -823,6 +803,8 @@
   // pendingLoginRetry：Apple 路径在别的标签页完成登录后，由 storage.onChanged 监听重试查词
   // WeChat 路径自己已在 setTimeout 里处理重试，故不写入此变量，避免双重重试
   let pendingLoginRetry = null;
+  // 🆕 pendingSaveWord：未登录点"添加到单词本"被拦下时暂存，登录成功后自动补保存
+  let pendingSaveWord = null;
   let appleLoginOcrChecked = false;
   function isSafariExt(){
     try { return chrome.runtime.getURL('').indexOf('safari-web-extension://') === 0 } catch (e) { return false }
@@ -868,12 +850,12 @@
     const qrWrap = document.createElement('div');
     qrWrap.className = 'ciba-video-ocr-login-qr';
     qrWrap.innerHTML = `
-      <div class="ciba-video-ocr-login-qr__title">微信扫码登录后可使用查词功能</div>
+      <div class="ciba-video-ocr-login-qr__title">扫码登录后即可保存到单词本</div>
       <div class="ciba-video-ocr-login-qr__img-wrap">
         <img class="ciba-video-ocr-login-qr__img" src="" alt="加载中..." />
       </div>
       <div class="ciba-video-ocr-login-qr__status">正在获取二维码...</div>
-      <div class="ciba-video-ocr-login-qr__hint">微信扫一扫，自动继续查词</div>
+      <div class="ciba-video-ocr-login-qr__hint">微信扫一扫，登录后自动保存刚点的词</div>
     `;
     container.appendChild(qrWrap);
 
@@ -1043,6 +1025,14 @@
       const r = pendingLoginRetry;
       pendingLoginRetry = null;
       if (r.word) searchWordInCard(r.word, r.sentence, r.searchTargetEl || undefined);
+    }
+    // 🆕 登录后自动补做之前被登录门禁拦下的"保存到单词本"
+    if (pendingSaveWord) {
+      const p = pendingSaveWord;
+      pendingSaveWord = null;
+      currentWord = p.word;
+      currentSentence = p.sentence;
+      addWordToNotebook();
     }
     // 兜底收起登录 QR（WeChat 路径自己的 setTimeout 也会 remove，这里幂等再 remove 一次）
     document.querySelectorAll('.ciba-video-ocr-login-qr').forEach(el => el.remove());
@@ -1349,10 +1339,12 @@
       return Promise.resolve(ytHoverDictCache.get(key));
     }
     return getToken().then((value) => {
-      if (!value || !value.ciba_token) {
-        return undefined; // 未登录：不弹气泡（getToken 每次都查 storage，登录后自动恢复）
-      }
-      const url = `${SERVER_API}/words/search_simple.json?token=${encodeURIComponent(value.ciba_token)}&wordName=${encodeURIComponent(word)}`;
+      // 🆕 免登录：悬停释义属"非账户功能"，未登录时匿名查询（接口已支持无 token）
+      const token = (value && value.ciba_token) || '';
+      const params = new URLSearchParams();
+      if (token) params.set('token', token);
+      params.set('wordName', word);
+      const url = `${SERVER_API}/words/search_simple.json?${params.toString()}`;
       return new Promise((resolve) => {
         const xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);

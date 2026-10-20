@@ -10,10 +10,10 @@
   --bg-glow: rgba(56, 189, 248, 0.1);
   --card-bg: #1e293b;
 
-  /* 文字 */
+  /* 文字（对比度基于卡片底 #1e293b 实测：#f8fafc 14.9:1 / #a5b4c8 6.9:1 / #8b9bb4 5.2:1） */
   --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-subtle: #64748b;
+  --text-muted: #a5b4c8;
+  --text-subtle: #8b9bb4;
 
   /* 强调色（与 video_ocr_content.css 一致） */
   --accent: #38bdf8;
@@ -161,10 +161,10 @@ body {
 .option-group__legend {
   padding: 0 8px 2px;
   margin-bottom: 8px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.3px;
-  color: var(--text-subtle);
+  letter-spacing: 0.2px;
+  color: var(--text-muted);
 }
 
 /* 选项行：整行可点，含自定义圆形指示器 */
@@ -299,7 +299,7 @@ body {
   bottom: 0;
   border: 1px solid var(--border-strong);
   border-radius: 24px;
-  background-color: rgba(148, 163, 184, 0.16);
+  background-color: rgba(148, 163, 184, 0.24);
   transition: background-color 0.2s var(--ease), border-color 0.2s var(--ease);
 }
 

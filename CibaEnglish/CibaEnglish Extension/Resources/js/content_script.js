@@ -139,7 +139,7 @@ wechatLoginCloseBtn.onclick = function () {
 wechatLoginHeader.appendChild(wechatLoginCloseBtn);
 
 var qrcodeText = document.createElement("div");
-qrcodeText.innerText = "请先微信扫码登录后再使用"
+qrcodeText.innerText = "扫码登录后即可保存到生词本"
 qrcodeText.style.fontSize = "15px";
 qrcodeText.style.color = "#f8fafc";
 qrcodeText.style.marginBottom = "12px";
@@ -463,12 +463,9 @@ document.addEventListener("mouseup", function(e) {
       return
     }
     // 已同意：继续原有逻辑
+    // 🆕 免登录：划词翻译属"非账户功能"，未登录也能用（登录门禁只保留在"添加到生词本"）
     getToken().then((value)=>{
-      if (value && value.ciba_token){
-        tryShowLayer()
-      }else{
-        showWechatLoginLayer()
-      }
+      tryShowLayer()
     })
   })
 });
@@ -721,95 +718,96 @@ function getToken(){
 // 以下请求在用户主动划词后触发，选中文本仅用于向 cibaen.com 查询单词释义
 function searchWord(word){
   wordDiv.innerText = word
+  // 🆕 免登录：查词释义属"非账户功能"，未登录时匿名查询（接口已支持无 token）
   getToken().then((value)=>{
-    if (value && value.ciba_token){
-      let wordCardTemplate = `
-          <div style="margin-top: 8px; color:#94a3b8;">
-              数据获取中...
-          </div>
-      `
-      translateDiv.innerHTML = wordCardTemplate
-      var xhr = new XMLHttpRequest();
-      xhr.open("GET", `${old_server_api}/words/search.json?token=${value.ciba_token}&wordName=${word}`, true);
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4) {
-          // JSON解析器不会执行攻击者设计的脚本.
-          let resp = JSON.parse(xhr.responseText);
-          let word = resp.word;
-          let pronEN = '[' + word.phEn + ']';
-          let enAudioUrl = word.phEnMp3;
-          let pronUS = '[' + word.phAm + ']';
-          let amAudioUrl = word.phAmMp3;
-          let isAdded = word.added; //单词状态  0：未添加到单词本
-          let currentWordInterpret = ''
-          //解析单词释义
-          let exampleText = '';
-          let speechParts = word.speechParts;
-          let sentences = '';
-          for (let i = 0; i < speechParts.length; i++) {
-            let speechPart = speechParts[i];
-            let partName = speechPart.partName + '  ';
-            let means = speechPart.means;
-            for (let j = 0; j < means.length; j++) {
-              let mean = means[j];
-              let wordMean = mean.wordMean + ';';
-              partName = partName + wordMean;
+    let wordCardTemplate = `
+        <div style="margin-top: 8px; color:#94a3b8;">
+            数据获取中...
+        </div>
+    `
+    translateDiv.innerHTML = wordCardTemplate
+    var xhr = new XMLHttpRequest();
+    const token = (value && value.ciba_token) || ''
+    const params = new URLSearchParams()
+    if (token) params.set('token', token)
+    params.set('wordName', word)
+    xhr.open("GET", `${old_server_api}/words/search.json?${params.toString()}`, true);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4) {
+        // JSON解析器不会执行攻击者设计的脚本.
+        let resp = JSON.parse(xhr.responseText);
+        let word = resp.word;
+        let pronEN = '[' + word.phEn + ']';
+        let enAudioUrl = word.phEnMp3;
+        let pronUS = '[' + word.phAm + ']';
+        let amAudioUrl = word.phAmMp3;
+        let isAdded = word.added; //单词状态  0：未添加到单词本
+        let currentWordInterpret = ''
+        //解析单词释义
+        let exampleText = '';
+        let speechParts = word.speechParts;
+        let sentences = '';
+        for (let i = 0; i < speechParts.length; i++) {
+          let speechPart = speechParts[i];
+          let partName = speechPart.partName + '  ';
+          let means = speechPart.means;
+          for (let j = 0; j < means.length; j++) {
+            let mean = means[j];
+            let wordMean = mean.wordMean + ';';
+            partName = partName + wordMean;
 
-              //解析例句
-              if (mean.hasOwnProperty("sentences")) {
-                let sentencesArray = mean.sentences;
-                if (sentencesArray) {
-                  let sentence = sentencesArray[0] //目前暂时获取第一个例句
-                  if (sentence) {
-                    sentences = sentences + sentence.english + "<br/>"
-                  }
+            //解析例句
+            if (mean.hasOwnProperty("sentences")) {
+              let sentencesArray = mean.sentences;
+              if (sentencesArray) {
+                let sentence = sentencesArray[0] //目前暂时获取第一个例句
+                if (sentence) {
+                  sentences = sentences + sentence.english + "<br/>"
                 }
               }
-
             }
-            partName = partName + "<br/>";
-            exampleText = exampleText + partName;
-            currentWordInterpret = exampleText;
-          }
-          wordCardTemplate = `
-              <div style="margin-top: 8px;color:#94a3b8;">
-                  <span>英 ${pronEN}</span>
-                  <span id="enAudio"><img id="enAudioImg" style="display:none;width:22px;height:22px;cursor:pointer;filter:brightness(2);"/></span>
-                  <span style="margin-left: 20px;">美 ${pronUS}</span>
-                  <span id="amAudio"><img id="amAudioImg" style="display:none;width:22px;height:22px;cursor:pointer;filter:brightness(2);"/></span>
-              </div>
-              <div style="margin-top: 8px;color:#e2e8f0;">
-                  ${currentWordInterpret}
-              </div>
-          `
 
-          setHtml(translateDiv, wordCardTemplate)
-
-          if (enAudioUrl){
-            let enAudioImg = document.getElementById("enAudioImg")
-            enAudioImg.style.display = "inline";
-            enAudioImg.src = chrome.runtime.getURL("images/sound.png");
-            document.getElementById("enAudio").addEventListener("click",function() {
-              audio.src = enAudioUrl
-              audio.play()
-            })
           }
+          partName = partName + "<br/>";
+          exampleText = exampleText + partName;
+          currentWordInterpret = exampleText;
+        }
+        wordCardTemplate = `
+            <div style="margin-top: 8px;color:#94a3b8;">
+                <span>英 ${pronEN}</span>
+                <span id="enAudio"><img id="enAudioImg" style="display:none;width:22px;height:22px;cursor:pointer;filter:brightness(2);"/></span>
+                <span style="margin-left: 20px;">美 ${pronUS}</span>
+                <span id="amAudio"><img id="amAudioImg" style="display:none;width:22px;height:22px;cursor:pointer;filter:brightness(2);"/></span>
+            </div>
+            <div style="margin-top: 8px;color:#e2e8f0;">
+                ${currentWordInterpret}
+            </div>
+        `
 
-          if (amAudioUrl){
-            let amAudioImg = document.getElementById("amAudioImg")
-            amAudioImg.style.display = "inline";
-            amAudioImg.src = chrome.runtime.getURL("images/sound.png");
-            document.getElementById("amAudio").addEventListener("click",function() {
-              audio.src = amAudioUrl
-              audio.play()
-            })
-          }
+        setHtml(translateDiv, wordCardTemplate)
+
+        if (enAudioUrl){
+          let enAudioImg = document.getElementById("enAudioImg")
+          enAudioImg.style.display = "inline";
+          enAudioImg.src = chrome.runtime.getURL("images/sound.png");
+          document.getElementById("enAudio").addEventListener("click",function() {
+            audio.src = enAudioUrl
+            audio.play()
+          })
+        }
+
+        if (amAudioUrl){
+          let amAudioImg = document.getElementById("amAudioImg")
+          amAudioImg.style.display = "inline";
+          amAudioImg.src = chrome.runtime.getURL("images/sound.png");
+          document.getElementById("amAudio").addEventListener("click",function() {
+            audio.src = amAudioUrl
+            audio.play()
+          })
         }
       }
-      xhr.send();
-    }else{
-      showToast("请先微信扫码登录","warning")
     }
+    xhr.send();
   })
 }
 
@@ -829,7 +827,6 @@ function addWord() {
             hideLayer()
             showToast("添加成功")
           }else if (resp && resp.result == -10001){
-            showToast("请先微信扫码登录","warning")
             hideLayer()
             showWechatLoginLayer()
           }else{
@@ -842,7 +839,6 @@ function addWord() {
 
       xhr.send(`wordName=${word}&englishCaption=${sentence}`);
     }else{
-      showToast("请先微信扫码登录","warning")
       hideLayer()
       showWechatLoginLayer()
     }
@@ -1016,7 +1012,6 @@ function fetchCardPackage(){
               })
             }
           }else if (resp && resp.result == -10001){
-            showToast("请先微信扫码登录","warning")
             hideLayer()
             showWechatLoginLayer()
           }else{
@@ -1042,7 +1037,6 @@ function fetchCardTemplate(){
             //处理模版
             initModel(resp.list)
           }else if (resp && resp.result == -10001){
-            showToast("请先微信扫码登录","warning")
             hideLayer()
             showWechatLoginLayer()
           }else{
@@ -1247,7 +1241,8 @@ function addCard(){
       
       xhr.send(JSON.stringify(params));
     }else{
-      showToast("请先微信扫码登录","warning")
+      hideLayer()
+      showWechatLoginLayer()
     }
   })
 }
@@ -1379,9 +1374,9 @@ function showToast(msg, type = 'success', duration = 2000) {
         chrome.storage.local.set({ privacyAgreed: true }, function() {
             var node = document.getElementById("ciba-privacy-notice");
             if (node && node.parentNode) node.parentNode.removeChild(node);
+            // 🆕 免登录：划词翻译属"非账户功能"，未登录也能用
             getToken().then(function(value) {
-                if (value && value.ciba_token) { tryShowLayer(); }
-                else { showWechatLoginLayer(); }
+                tryShowLayer();
             });
         });
     });
