@@ -379,7 +379,7 @@
     const logo = document.createElement("img");
     logo.className = "ciba-video-ocr-trigger-logo";
     logo.src = chrome.runtime.getURL("icons/icon-128.png"); // 提前赋值 src，先把图片加载起来，避免插入瞬间还是空白
-    logo.alt = "糍粑记忆卡";
+    logo.alt = "糍粑记忆卡 + 视频字幕OCR";
     logo.draggable = false;
 
     if (triggerBtnLogoTimer) clearTimeout(triggerBtnLogoTimer);

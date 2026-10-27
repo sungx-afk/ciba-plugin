@@ -105,7 +105,7 @@ wechatLoginHeader.style.textAlign = "center";
 wechatLoginLayer.appendChild(wechatLoginHeader)
 
 var qrCodeTitle = document.createElement("div");
-qrCodeTitle.innerText = "糍粑记忆卡插件"
+qrCodeTitle.innerText = "糍粑记忆卡 + 视频字幕OCR"
 qrCodeTitle.style.fontSize = "18px";
 qrCodeTitle.style.color = "#f8fafc";
 qrCodeTitle.style.fontWeight = "bold";

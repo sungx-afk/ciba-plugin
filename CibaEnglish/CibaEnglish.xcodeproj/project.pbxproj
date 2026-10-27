@@ -15,6 +15,8 @@
 		D666FB1830788AE600BFBA50 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D666FB1730788AE600BFBA50 /* ViewController.swift */; };
 		D666FB1B30788AE600BFBA50 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D666FB1930788AE600BFBA50 /* Main.storyboard */; };
 		D666FB1D30788AEC00BFBA50 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D666FB1C30788AEC00BFBA50 /* Assets.xcassets */; };
+		C1BA000000000000000000A4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C1BA000000000000000000A3 /* InfoPlist.strings */; };
+		B1BA000000000000000000B4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B1BA000000000000000000B3 /* InfoPlist.strings */; };
 		D666FB2630788AED00BFBA50 /* CibaEnglish Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D666FB2530788AED00BFBA50 /* CibaEnglish Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		D666FB2B30788AED00BFBA50 /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D666FB2A30788AED00BFBA50 /* SafariWebExtensionHandler.swift */; };
 		D666FB4030788AEE00BFBA50 /* privacy-policy.html in Resources */ = {isa = PBXBuildFile; fileRef = D666FB3830788AEE00BFBA50 /* privacy-policy.html */; };
@@ -52,7 +54,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		D666FB0830788AE600BFBA50 /* CibaEnglish.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CibaEnglish.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1BA000000000000000000A1 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		C1BA000000000000000000A2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B1BA000000000000000000B1 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh-Hans; path = zh-Hans.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B1BA000000000000000000B2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		D666FB0830788AE600BFBA50 /* CibaEnglish.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "糍粑记忆卡 + 视频字幕OCR.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D666FB0B30788AE600BFBA50 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D666FB0F30788AE600BFBA50 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = ../Base.lproj/Main.html; sourceTree = "<group>"; };
 		D666FB1130788AE600BFBA50 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
@@ -120,6 +126,7 @@
 				D666FB0B30788AE600BFBA50 /* AppDelegate.swift */,
 				D666FB1730788AE600BFBA50 /* ViewController.swift */,
 				D666FB1930788AE600BFBA50 /* Main.storyboard */,
+				C1BA000000000000000000A3 /* InfoPlist.strings */,
 				D666FB1C30788AEC00BFBA50 /* Assets.xcassets */,
 				D666FB1E30788AEC00BFBA50 /* Info.plist */,
 				D666FB1F30788AEC00BFBA50 /* CibaEnglish.entitlements */,
@@ -147,6 +154,7 @@
 				D666FB2A30788AED00BFBA50 /* SafariWebExtensionHandler.swift */,
 				D666FB2C30788AED00BFBA50 /* Info.plist */,
 				D666FB2D30788AED00BFBA50 /* CibaEnglish_Extension.entitlements */,
+				B1BA000000000000000000B3 /* InfoPlist.strings */,
 			);
 			path = "CibaEnglish Extension";
 			sourceTree = "<group>";
@@ -233,6 +241,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = D666FAFF30788AE600BFBA50;
 			productRefGroup = D666FB0930788AE600BFBA50 /* Products */;
@@ -252,6 +261,7 @@
 			files = (
 				D666FB1230788AE600BFBA50 /* Icon.png in Resources */,
 				D666FB1B30788AE600BFBA50 /* Main.storyboard in Resources */,
+				C1BA000000000000000000A4 /* InfoPlist.strings in Resources */,
 				D666FB1630788AE600BFBA50 /* Script.js in Resources */,
 				D666FB1030788AE600BFBA50 /* Main.html in Resources */,
 				D666FB1D30788AEC00BFBA50 /* Assets.xcassets in Resources */,
@@ -271,6 +281,7 @@
 				D666FB4730788AEE00BFBA50 /* pages in Resources */,
 				D666FB4430788AEE00BFBA50 /* readme.md in Resources */,
 				D666FB4330788AEE00BFBA50 /* js in Resources */,
+				B1BA000000000000000000B4 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,7 +314,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "if [ \"$CONFIGURATION\" != \"Debug\" ]; then\n  echo \"Skip deploy: only Debug builds deploy to /Applications, Archive is not affected\"\n  exit 0\nfi\nDST=\"/Applications/CibaEnglish.app\"\nSRC=\"${BUILT_PRODUCTS_DIR}/CibaEnglish.app\"\necho \"🚀 Deploying: $SRC → $DST\"\nif [ ! -d \"$SRC\" ]; then\n  echo \"❌ 源 .app 不存在: $SRC\"; exit 1\nfi\nif [ -d \"$DST\" ]; then\n  rm -rf \"$DST\" || { echo \"❌ 无法删除旧的 $DST\"; exit 1; }\nfi\nditto \"$SRC\" \"$DST\" && echo \"✅ 已部署到 $DST\" || { echo \"❌ 部署失败\"; exit 1; }\ncodesign --force --sign \"${EXPANDED_CODE_SIGN_IDENTITY:--}\" --entitlements \"$SRCROOT/CibaEnglish/CibaEnglish.entitlements\" --options runtime \"$DST\" && echo \"✅ 已重签名部署副本\" || echo \"⚠️ 重签名失败\"\n";
+			shellScript = "if [ \"$CONFIGURATION\" != \"Debug\" ]; then\n  echo \"Skip deploy: only Debug builds deploy to /Applications, Archive is not affected\"\n  exit 0\nfi\nDST=\"/Applications/糍粑记忆卡 + 视频字幕OCR.app\"\nSRC=\"${BUILT_PRODUCTS_DIR}/糍粑记忆卡 + 视频字幕OCR.app\"\necho \"🚀 Deploying: $SRC → $DST\"\nif [ ! -d \"$SRC\" ]; then\n  echo \"❌ 源 .app 不存在: $SRC\"; exit 1\nfi\nif [ -d \"$DST\" ]; then\n  rm -rf \"$DST\" || { echo \"❌ 无法删除旧的 $DST\"; exit 1; }\nfi\nditto \"$SRC\" \"$DST\" && echo \"✅ 已部署到 $DST\" || { echo \"❌ 部署失败\"; exit 1; }\ncodesign --force --sign \"${EXPANDED_CODE_SIGN_IDENTITY:--}\" --entitlements \"$SRCROOT/CibaEnglish/CibaEnglish.entitlements\" --options runtime \"$DST\" && echo \"✅ 已重签名部署副本\" || echo \"⚠️ 重签名失败\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -336,6 +347,24 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		C1BA000000000000000000A3 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C1BA000000000000000000A1 /* zh-Hans */,
+				C1BA000000000000000000A2 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		B1BA000000000000000000B3 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B1BA000000000000000000B1 /* zh-Hans */,
+				B1BA000000000000000000B2 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		D666FB0E30788AE600BFBA50 /* Main.html */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -479,13 +508,13 @@
 				CODE_SIGN_ENTITLEMENTS = "CibaEnglish Extension/CibaEnglish_Extension.entitlements";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = JGBX7E5U56;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "CibaEnglish Extension/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "CibaEnglish Extension";
+				INFOPLIST_KEY_CFBundleDisplayName = "糍粑记忆卡 + 视频字幕OCR";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -499,6 +528,7 @@
 					SafariServices,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.yugusoft.CibaEnglish.plugin.Extension;
+				PRODUCT_MODULE_NAME = CibaEnglish_Extension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -512,13 +542,13 @@
 				CODE_SIGN_ENTITLEMENTS = "CibaEnglish Extension/CibaEnglish_Extension.entitlements";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = JGBX7E5U56;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "CibaEnglish Extension/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "CibaEnglish Extension";
+				INFOPLIST_KEY_CFBundleDisplayName = "糍粑记忆卡 + 视频字幕OCR";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -532,6 +562,7 @@
 					SafariServices,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.yugusoft.CibaEnglish.plugin.Extension;
+				PRODUCT_MODULE_NAME = CibaEnglish_Extension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -554,7 +585,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CibaEnglish/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = CibaEnglish;
+				INFOPLIST_KEY_CFBundleDisplayName = "糍粑记忆卡 + 视频字幕OCR";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
@@ -571,7 +602,8 @@
 					WebKit,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.yugusoft.CibaEnglish.plugin;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_MODULE_NAME = CibaEnglish;
+				PRODUCT_NAME = "糍粑记忆卡 + 视频字幕OCR";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -593,7 +625,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CibaEnglish/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = CibaEnglish;
+				INFOPLIST_KEY_CFBundleDisplayName = "糍粑记忆卡 + 视频字幕OCR";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
@@ -610,7 +642,8 @@
 					WebKit,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.yugusoft.CibaEnglish.plugin;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_MODULE_NAME = CibaEnglish;
+				PRODUCT_NAME = "糍粑记忆卡 + 视频字幕OCR";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

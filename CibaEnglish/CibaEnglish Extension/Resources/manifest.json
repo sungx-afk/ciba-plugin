@@ -10,7 +10,7 @@
   },
   "action": {
     "default_popup": "pages/popup.html",
-    "default_title": "糍粑记忆卡",
+    "default_title": "糍粑记忆卡 + 视频字幕OCR",
     "default_icon": {
       "16": "icons/icon-16.png",
       "48": "icons/icon-48.png",
