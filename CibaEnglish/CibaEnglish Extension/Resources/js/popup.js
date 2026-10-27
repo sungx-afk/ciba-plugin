@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!result[PRIVACY_KEY]) {
       // 未同意：显示告知条，隐藏两个功能 card（用 class 与原有 .hide 体系统一）
       notice.style.display = "block";
+      document.getElementById("guest_usage").classList.add("hide");
       document.getElementById("not_logged").classList.add("hide");
       document.getElementById("logged").classList.add("hide");
 
@@ -39,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
           // （initApp 含二维码 / 密码登录 / Apple 登录 / 重登按钮 / 禁用开关等全部逻辑，
           //   否则首次会话这些都不会执行——Apple 按钮不显示的根因）
           notice.style.display = "none";
+          document.getElementById("guest_usage").classList.remove("hide");
           document.getElementById("not_logged").classList.remove("hide");
           initApp();
         });
@@ -87,6 +89,7 @@ function initApp() {
     document.getElementById("logged").classList.add("hide");
     document.getElementById("not_logged").classList.remove("hide");
     chrome.storage.local.remove('ciba_token', function(){});
+    updateGuestUsageVisibility(false); // 切回未登录：恢复免登录说明
     refreshAppleLoginBtn()  // 🆕 切回未登录后恢复 Apple 按钮可见
   })
 }
@@ -181,8 +184,20 @@ function handleQrcode(token){
   document.getElementById("ciba_main").href = `https://cibaen.com/ciba-pc/index.html#/login?token=${finalToken}`
   document.getElementById("not_logged").classList.add("hide");
   document.getElementById("logged").classList.remove("hide");
+  updateGuestUsageVisibility(true); // 已登录：隐藏「无需登录…」标题与第 3 条提示
   stopRefreshQrCode()
   refreshAppleLoginBtn()  // 🆕 切到已登录后隐藏 Apple 按钮
+}
+
+// ===== guest 卡随登录态切换 =====
+// 已登录时「无需登录，以下功能立即可用」和「仅…需要登录」两条已不适用，隐藏；
+// 保留第 1/2 条使用说明（功能入口提示与登录无关）。未登录时恢复显示
+// （Apple 5.1.1 要求未登录首屏就能看到免登录能力）。
+function updateGuestUsageVisibility(isLogged) {
+  ['guest_usage_title', 'guest_usage_tip3'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.toggle('hide', !!isLogged);
+  });
 }
 
 function stopRefreshQrCode() {
@@ -307,6 +322,7 @@ chrome.storage.onChanged.addListener(function (changes, area) {
     finalToken = '';
     document.getElementById("logged").classList.add("hide");
     document.getElementById("not_logged").classList.remove("hide");
+    updateGuestUsageVisibility(false); // 切回未登录：恢复免登录说明
     stopRefreshQrCode();
     fetchQrCodeKey();
   }

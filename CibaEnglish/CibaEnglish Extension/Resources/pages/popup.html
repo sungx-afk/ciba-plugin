@@ -21,9 +21,19 @@
         <button id="privacy-agree-btn" class="privacy-notice__btn" disabled>确认并继续使用</button>
     </div>
 
-    <!-- 未登录态 -->
+    <!-- ===== 免登录功能：使用说明（无论是否登录都显示）=====
+         Apple 5.1.1：非账号相关的功能（字幕识别、划词翻译）不得要求登录，
+         且必须让用户在未登录时就能看到并用到，因此本块独立于登录态，始终可见。 -->
+    <div class="card" id="guest_usage">
+        <div class="card__tip bold" id="guest_usage_title">无需登录，以下功能立即可用</div>
+        <div class="card__tip left">1. 视频播放页按「空格键」暂停 → 自动识别字幕</div>
+        <div class="card__tip left">2. 英文网页双击单词 → 即时翻译</div>
+        <div class="card__tip left" id="guest_usage_tip3">3. 仅「添加到生词本」需要登录</div>
+    </div>
+
+    <!-- 未登录态：登录是可选的，仅用于生词本云同步 -->
     <div class="card" id="not_logged">
-        <div class="card__tip">微信扫码登录后开通生词本<br>可在微信里进行复习</div>
+        <div class="card__tip">登录后把单词添加到生词本，在微信小程序里复习<br>（不登录不影响字幕识别与翻译）</div>
         <div class="qrcode-wrapper">
             <img class="qrcode hide" id="qrcode" src="" alt="微信扫码登录" />
         </div>
@@ -38,9 +48,8 @@
 
     <!-- 已登录态 -->
     <div class="card hide" id="logged">
-        <div class="card__tip left bold">1. 在视频播放页面空格键暂停可识别字幕并添加单词本</div>
-        <div class="card__tip left">2. 在英文网页鼠标双击取词添加单词本</div>
-        <div class="card__tip left">3. 在微信搜索小程序 <strong>"糍粑记忆卡"</strong> 复习单词</div>
+        <div class="card__tip left bold">已登录：识别出来的词可直接加入生词本</div>
+        <div class="card__tip left">在微信搜索小程序 <strong>"糍粑记忆卡"</strong> 复习单词</div>
         <a class="btn-primary" href="" id="ciba_main" target="_blank">进入网页学习</a>
         
         <div class="actions">
