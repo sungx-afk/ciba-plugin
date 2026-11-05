@@ -26,9 +26,13 @@
          且必须让用户在未登录时就能看到并用到，因此本块独立于登录态，始终可见。 -->
     <div class="card" id="guest_usage">
         <div class="card__tip bold" id="guest_usage_title">无需登录，以下功能立即可用</div>
-        <div class="card__tip left">1. 视频播放页按「空格键」暂停 → 自动识别字幕</div>
-        <div class="card__tip left">2. 英文网页双击单词 → 即时翻译</div>
-        <div class="card__tip left" id="guest_usage_tip3">3. 仅「添加到生词本」需要登录</div>
+        <div class="card__tip left">1. YouTube 播放页自动显示双语字幕，点字幕里的词即可翻译</div>
+        <div class="card__tip left">2. B站/腾讯/爱奇艺等视频站按「空格键」暂停 → 自动识别字幕</div>
+        <div class="card__tip left">3. 英文网页双击单词 → 即时翻译</div>
+        <div class="card__tip left" id="guest_usage_tip3">仅「添加到生词本」需要登录</div>
+        <!-- 一键试用：直接打开带英文字幕的 YouTube 视频，双语覆盖层立即可见。
+             目的：让用户/审核员零摸索看到免登录能力（5.1.1 两轮被拒的核心即「找不到入口」）。 -->
+        <a class="btn-primary" href="https://www.youtube.com/watch?v=8jPQjjsBbIc" target="_blank">试一试：打开示例视频（免登录）</a>
     </div>
 
     <!-- 未登录态：登录是可选的，仅用于生词本云同步 -->
