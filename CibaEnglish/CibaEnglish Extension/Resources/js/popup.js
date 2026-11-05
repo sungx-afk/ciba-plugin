@@ -182,6 +182,8 @@ function checkQrCode(){
 function handleQrcode(token){
   finalToken = token
   document.getElementById("ciba_main").href = `https://cibaen.com/ciba-pc/index.html#/login?token=${finalToken}`
+  // 注销页链接：token 放 hash（不会进服务器访问日志），页面端从 location.hash 读取
+  document.getElementById("account_delete_link").href = `https://cibaen.com/account-delete.html#token=${finalToken}`
   document.getElementById("not_logged").classList.add("hide");
   document.getElementById("logged").classList.remove("hide");
   updateGuestUsageVisibility(true); // 已登录：隐藏「无需登录…」标题与第 3 条提示

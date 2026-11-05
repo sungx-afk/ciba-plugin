@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "糍粑记忆卡 + 视频字幕OCR",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "在视频网站自动识别字幕并查词翻译，在任意网页划词查询糍粑词典、加入生词本。",
   "icons": {
     "16": "icons/icon-16.png",
