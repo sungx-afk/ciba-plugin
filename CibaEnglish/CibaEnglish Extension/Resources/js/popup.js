@@ -59,6 +59,13 @@ function initApp() {
   // ===== 新增：初始化“在此网站禁用”开关（最少改动，一行调用）=====
   initDisableToggle();
 
+  // ===== 「进入网页学习」按钮的平台区分 =====
+  // Safari/MAS 版隐藏（Apple 3.1.1：不得从 App 表面引导至官网购买页）；
+  // Chrome 版保留（Chrome 商店无此限制，官网深度登录入口对用户有用）。
+  // isSafariExt() 靠 runtime.getURL 的 safari-web-extension:// 前缀判断。
+  var cibaMain = document.getElementById('ciba_main');
+  if (cibaMain && !isSafariExt()) cibaMain.classList.remove('hide');
+
   getLocalToken().then((value)=>{
     if (value && value.ciba_token){
       handleQrcode(value.ciba_token)

@@ -50,8 +50,11 @@
     <div class="card hide" id="logged">
         <div class="card__tip left bold">已登录：识别出来的词可直接加入生词本</div>
         <div class="card__tip left">在微信搜索小程序 <strong>"糍粑记忆卡"</strong> 复习单词</div>
-        <a class="btn-primary" href="" id="ciba_main" target="_blank">进入网页学习</a>
-        
+        <!-- 「进入网页学习」：仅 Chrome 版显示。
+             Safari/MAS 版必须隐藏（Apple 3.1.1：不得从 App 表面引导至官网购买页）。
+             默认 hide，由 popup.js 按 isSafariExt() 决定是否显示。 -->
+        <a class="btn-primary hide" href="" id="ciba_main" target="_blank">进入网页学习</a>
+
         <div class="actions">
             <a class="actions__link" href="./options.html" target="_blank">设置</a>
             <span class="actions__link" id="relogin">重新扫码</span>
