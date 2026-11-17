@@ -11,6 +11,16 @@ body {
     font-size: 13px;
     color: #333;
     background: #f5f5f7;
+    /* 🆕 Safari popover 不像 Chrome popup 会自动出滚动条：内容超高会被直接裁掉。
+       限高 + 纵向滚动（Chrome 下内容不超高时滚动条不出现，无副作用） */
+    max-height: 560px;
+    overflow-y: auto;
+}
+
+/* 🆕 Safari 专用：固定高度——内容异步变高（二维码图片/密码区）时 popover 有时不重排，
+   导致滚动时有时无；固定高度后滚动条始终可用。popup.js 按 isSafariExt() 加此 class */
+body.safari-popover {
+    height: 560px;
 }
 
 .hide {

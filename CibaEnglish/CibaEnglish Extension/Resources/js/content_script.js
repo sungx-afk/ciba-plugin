@@ -81,7 +81,8 @@ var wechatLoginLayer = document.createElement("div");
 wechatLoginLayer.style.position = "fixed";
 wechatLoginLayer.style.zIndex = "9999999999";
 
-wechatLoginLayer.style.top = (window.innerHeight - 320) / 2 + "px";
+// 🆕 增加账号密码登录区后浮层变高（约 480px），垂直居中按新高度计算
+wechatLoginLayer.style.top = Math.max(10, (window.innerHeight - 480) / 2) + "px";
 wechatLoginLayer.style.left = (window.innerWidth - 320) / 2 + "px";
 wechatLoginLayer.style.width = "320px";
 // wechatLoginLayer.style.height = "320px";
@@ -161,6 +162,103 @@ qrcodeTextTip.style.fontSize = "13px";
 qrcodeTextTip.style.color = "#94a3b8";
 qrcodeTextTip.style.marginTop = "12px";
 wechatLoginLayer.appendChild(qrcodeTextTip)
+
+// 🆕 账号密码登录区（与 popup / 视频卡内登录同接口：POST /users/login.json）
+var pwdSection = document.createElement("div");
+pwdSection.style.width = "100%";
+pwdSection.style.marginTop = "12px";
+pwdSection.style.paddingTop = "10px";
+pwdSection.style.borderTop = "1px dashed rgba(255,255,255,0.15)";
+
+var pwdDivider = document.createElement("div");
+pwdDivider.innerText = "—— 或账号密码登录 ——";
+pwdDivider.style.fontSize = "12px";
+pwdDivider.style.color = "#94a3b8";
+pwdDivider.style.marginBottom = "8px";
+pwdDivider.style.textAlign = "center";
+pwdSection.appendChild(pwdDivider);
+
+function createPwdInput(placeholder, isPassword) {
+  var input = document.createElement("input");
+  input.placeholder = placeholder;
+  input.type = isPassword ? "password" : "text";
+  input.style.width = "100%";
+  input.style.boxSizing = "border-box";
+  input.style.height = "30px";
+  input.style.marginBottom = "8px";
+  input.style.padding = "0 10px";
+  input.style.fontSize = "13px";
+  input.style.color = "#e2e8f0";
+  input.style.backgroundColor = "rgba(255,255,255,0.08)";
+  input.style.border = "1px solid rgba(255,255,255,0.15)";
+  input.style.borderRadius = "5px";
+  input.style.outline = "none";
+  input.onfocus = function () { input.style.borderColor = "#38bdf8"; };
+  input.onblur = function () { input.style.borderColor = "rgba(255,255,255,0.15)"; };
+  return input;
+}
+var pwdUserInput = createPwdInput("请输入账号", false);
+var pwdPassInput = createPwdInput("请输入密码", true);
+pwdSection.appendChild(pwdUserInput);
+pwdSection.appendChild(pwdPassInput);
+
+var pwdLoginBtn = document.createElement("button");
+pwdLoginBtn.innerText = "登 录";
+pwdLoginBtn.style.width = "100%";
+pwdLoginBtn.style.height = "32px";
+pwdLoginBtn.style.fontSize = "13px";
+pwdLoginBtn.style.color = "#fff";
+pwdLoginBtn.style.backgroundColor = "#3b82f6";
+pwdLoginBtn.style.border = "none";
+pwdLoginBtn.style.borderRadius = "5px";
+pwdLoginBtn.style.cursor = "pointer";
+pwdLoginBtn.onmouseenter = function () { if (!pwdLoginBtn.disabled) pwdLoginBtn.style.backgroundColor = "#2563eb"; };
+pwdLoginBtn.onmouseleave = function () { pwdLoginBtn.style.backgroundColor = "#3b82f6"; };
+pwdSection.appendChild(pwdLoginBtn);
+
+var pwdErrorTip = document.createElement("div");
+pwdErrorTip.style.fontSize = "12px";
+pwdErrorTip.style.color = "#f87171";
+pwdErrorTip.style.marginTop = "6px";
+pwdErrorTip.style.minHeight = "14px";
+pwdSection.appendChild(pwdErrorTip);
+
+// 🆕 账号密码登录入口仅 Safari 插件显示（与「试一试」按钮同策略，Chrome/Edge 不出）
+if (!isSafariExt()) pwdSection.style.display = "none";
+
+pwdLoginBtn.onclick = function () {
+  var username = pwdUserInput.value.trim();
+  var password = pwdPassInput.value.trim();
+  if (!username || !password) { pwdErrorTip.innerText = "请输入账号和密码"; return; }
+  pwdLoginBtn.disabled = true;
+  pwdLoginBtn.innerText = "登录中...";
+  pwdErrorTip.innerText = "";
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", server_api + "/users/login.json", true);
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState !== 4) return;
+    pwdLoginBtn.disabled = false;
+    pwdLoginBtn.innerText = "登 录";
+    if (xhr.status !== 200) { pwdErrorTip.innerText = "网络错误，请稍后重试"; return; }
+    try {
+      var resp = JSON.parse(xhr.responseText);
+      if (resp && resp.token) {
+        // 与扫码登录同一收尾：写 token 后由 storage.onChanged 自动关闭浮层（见 899 行）
+        pwdErrorTip.innerText = "";
+        pwdLoginBtn.innerText = "登录成功！";
+        chrome.storage.local.set({ ciba_token: resp.token }, function () {});
+      } else {
+        pwdErrorTip.innerText = (resp && resp.msg) ? resp.msg : "登录失败，请检查账号密码";
+      }
+    } catch (e) {
+      pwdErrorTip.innerText = "登录失败，请稍后重试";
+    }
+  };
+  xhr.send(JSON.stringify({ loginName: username, password: password }));
+};
+
+wechatLoginLayer.appendChild(pwdSection);
 
 //通过 Apple 登录入口（仅 Safari + appleLoginEnabled 开启时显示，见 refreshAppleLoginBtn）
 //样式对齐 popup.css 的 .apple-login-btn
@@ -1286,7 +1384,18 @@ function noteInsertData(note,index,content){
   }
 }
 
+// 🆕 3.1.1 保险：服务端报错文案透传前过滤付费敏感词（与 video_ocr_content 同策略）
+function cibaSanitizePaywallText(text) {
+  const s = String(text || '');
+  if (/充值|会员|VIP|vip|付费|支付/.test(s)) {
+    return '生词本容量已达上限，请先清理后再试';
+  }
+  return s;
+}
+
 function showToast(msg, type = 'success', duration = 2000) {
+  // 🆕 净化仅 Safari 插件生效（Apple 审核 3.1.1）；Chrome/Edge 版原文透传
+  if (isSafariExt()) msg = cibaSanitizePaywallText(msg);
   let toastNode = `<div id="ciba_toast" class="toast-content toast-${type}">`;
 
   toastNode += `

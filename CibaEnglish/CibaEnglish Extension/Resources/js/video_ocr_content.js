@@ -62,6 +62,26 @@
   };
 
   // ===== 🆕 辅助函数（七牛上传用） =====
+  // 🆕 上传前压缩截图：全帧 PNG 可达 2~4MB，是加词「半天才有反应」的主因。
+  // 生词卡展示用长边 1280 的 JPEG 足够（体积 ~200KB），失败时兜底用原图。
+  function compressShotBlob(blob) {
+    return new Promise((resolve) => {
+      const fallback = () => resolve(blob);
+      try {
+        createImageBitmap(blob).then((bmp) => {
+          try {
+            const scale = Math.min(1, 1280 / Math.max(bmp.width, bmp.height));
+            const c = document.createElement('canvas');
+            c.width = Math.round(bmp.width * scale);
+            c.height = Math.round(bmp.height * scale);
+            c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+            c.toBlob((out) => resolve(out && out.size < blob.size ? out : blob), 'image/jpeg', 0.85);
+          } catch (e) { fallback(); }
+        }).catch(fallback);
+      } catch (e) { fallback(); }
+    });
+  }
+
   function blobToBase64(blob) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -148,7 +168,19 @@
     injectGlobalTriggerButton();
   }
 
+  // 🆕 3.1.1 保险：服务端报错文案透传前过滤付费敏感词——App 表面（含 toast）
+  // 永不出现任何充值/会员/支付引导，即使服务端其他接口将来漏出类似文案也有兜底
+  function cibaSanitizePaywallText(text) {
+    const s = String(text || '');
+    if (/充值|会员|VIP|vip|付费|支付/.test(s)) {
+      return '生词本容量已达上限，请先清理后再试';
+    }
+    return s;
+  }
+
   function showToast(message, isLoading = true, duration = 4000, onClick = null) {
+    // 🆕 净化仅 Safari 插件生效（Apple 审核 3.1.1）；Chrome/Edge 版原文透传
+    if (isSafariExt()) message = cibaSanitizePaywallText(message);
     if (!toastElement) initOverlayElements();
     const msgEl = document.getElementById("ciba-video-ocr-toast-msg");
     const spinner = toastElement.querySelector(".ciba-video-ocr-spinner");
@@ -813,7 +845,10 @@
             resumeVideoIfPaused();
           }
           showToast(`"${wordToSave}" 已添加到单词本 ✅`, true);
-          blobToBase64(lastFullVideoBlob).then((base64Data) => {
+          // 🆕 先压缩再转 base64（2~4MB PNG → ~200KB JPEG），上传耗时降约 10 倍
+          compressShotBlob(lastFullVideoBlob)
+            .then((shotBlob) => blobToBase64(shotBlob))
+            .then((base64Data) => {
             const base64Str = base64Data.replace(/^data:.*;base64,/, '');
             const fileName = generateUuid(16) + '.png';
 
@@ -915,17 +950,73 @@
     const qrWrap = document.createElement('div');
     qrWrap.className = 'ciba-video-ocr-login-qr';
     qrWrap.innerHTML = `
-      <div class="ciba-video-ocr-login-qr__title">微信扫码登录后即可保存到生词本</div>
+      <div class="ciba-video-ocr-login-qr__title">保存到生词本需要登录（可选功能）</div>
       <div class="ciba-video-ocr-login-qr__img-wrap">
         <img class="ciba-video-ocr-login-qr__img" src="" alt="加载中..." />
       </div>
       <div class="ciba-video-ocr-login-qr__status">正在获取二维码...</div>
       <div class="ciba-video-ocr-login-qr__hint">微信扫一扫，登录后自动保存刚点的词</div>
+      <div class="ciba-video-ocr-login-qr__pwd">
+        <div class="ciba-video-ocr-login-qr__pwd-divider">—— 或账号密码登录 ——</div>
+        <input class="ciba-video-ocr-login-qr__pwd-input" data-pwd="user" placeholder="请输入账号" />
+        <input class="ciba-video-ocr-login-qr__pwd-input" data-pwd="pass" type="password" placeholder="请输入密码" />
+        <button class="ciba-video-ocr-login-qr__pwd-btn">登 录</button>
+        <div class="ciba-video-ocr-login-qr__pwd-err"></div>
+      </div>
+      <div class="ciba-video-ocr-login-qr__skip">暂不登录 · 继续查词翻译</div>
     `;
+    // 🆕 账号密码登录入口仅 Safari 插件显示（Chrome/Edge 不出，与「试一试」按钮同策略）
+    if (!isSafariExt()) {
+      const pwdSectionEl = qrWrap.querySelector('.ciba-video-ocr-login-qr__pwd');
+      if (pwdSectionEl) pwdSectionEl.style.display = 'none';
+    }
     container.appendChild(qrWrap);
+
+    // 🆕 跳过登录：明确告诉审核者/用户登录是可选的，不登录字幕卡功能照常
+    const skipEl = qrWrap.querySelector('.ciba-video-ocr-login-qr__skip');
+    if (skipEl) skipEl.onclick = function () {
+      if (bodyLoginPollTimer) { clearInterval(bodyLoginPollTimer); bodyLoginPollTimer = null; }
+      qrWrap.remove();
+    };
 
     const imgEl = qrWrap.querySelector('.ciba-video-ocr-login-qr__img');
     const statusEl = qrWrap.querySelector('.ciba-video-ocr-login-qr__status');
+
+    // 🆕 账号密码登录（与 popup 的 setupPasswordLogin 同接口：POST /users/login.json）
+    const pwdBtn = qrWrap.querySelector('.ciba-video-ocr-login-qr__pwd-btn');
+    const pwdErr = qrWrap.querySelector('.ciba-video-ocr-login-qr__pwd-err');
+    pwdBtn.onclick = function () {
+      const user = qrWrap.querySelector('[data-pwd="user"]').value.trim();
+      const pass = qrWrap.querySelector('[data-pwd="pass"]').value.trim();
+      if (!user || !pass) { pwdErr.textContent = '请输入账号和密码'; return; }
+      pwdBtn.disabled = true; pwdBtn.textContent = '登录中...'; pwdErr.textContent = '';
+      const xhrPwd = new XMLHttpRequest();
+      xhrPwd.open('POST', `${SERVER_API}/users/login.json`, true);
+      xhrPwd.setRequestHeader('Content-Type', 'application/json');
+      xhrPwd.onreadystatechange = function () {
+        if (xhrPwd.readyState !== 4) return;
+        pwdBtn.disabled = false; pwdBtn.textContent = '登 录';
+        if (xhrPwd.status !== 200) { pwdErr.textContent = '网络错误，请稍后重试'; return; }
+        try {
+          const resp = JSON.parse(xhrPwd.responseText);
+          if (resp && resp.token) {
+            // 登录成功：与扫码登录同一处理——存 token、刷新按钮态、回原释义区继续查词
+            if (bodyLoginPollTimer) { clearInterval(bodyLoginPollTimer); bodyLoginPollTimer = null; }
+            statusEl.textContent = '登录成功！';
+            chrome.storage.local.set({ ciba_token: resp.token }, () => {
+              updateAddButtonState();
+              setTimeout(() => {
+                qrWrap.remove();
+                if (word) searchWordInCard(word, sentence, searchTargetEl || undefined);
+              }, 600);
+            });
+          } else {
+            pwdErr.textContent = (resp && resp.msg) || '登录失败，请检查账号密码';
+          }
+        } catch (e) { pwdErr.textContent = '登录失败，请稍后重试'; }
+      };
+      xhrPwd.send(JSON.stringify({ loginName: user, password: pass }));
+    };
 
     // 通过 Apple 登录（仅 Safari + appleLoginEnabled 开启时显示）
     const appleBtn = document.createElement('div');
@@ -975,7 +1066,23 @@
 
   // OCR 卡片：二维码嵌到卡片 body 内
   function showLoginQRInBody(word, sentence) {
-    showLoginQR(document.querySelector('.ciba-video-ocr-body'), word, sentence, null);
+    // 🆕 修复「YT 点添加到单词本没反应」：YT 覆盖层卡内没有 .ciba-video-ocr-body，
+    // 旧逻辑 document.querySelector 命中的是隐藏的 OCR 结果卡，二维码被追加进
+    // display:none 的卡里，用户看不到任何反应。现在按当前可见的卡选容器。
+    const ytCard = document.getElementById('ciba-yt-overlay-card');
+    if (cibaYtCardVisible() && ytCard) {
+      // 挂到卡片本体（不能放进释义容器——detail 有 max-height+滚动，二维码会被裁掉「显示不全」）
+      showLoginQR(ytCard, word, sentence, document.getElementById('ciba-yt-overlay-detail'));
+      // showLoginQR 是 appendChild 到容器末尾：把二维码块移到释义区和按钮行之间
+      const qr = ytCard.querySelector('.ciba-video-ocr-login-qr');
+      const footer = ytCard.querySelector('.ciba-yt-overlay-footer');
+      if (qr && footer) ytCard.insertBefore(qr, footer);
+      return;
+    }
+    const body = document.querySelector('.ciba-video-ocr-body');
+    if (body) { showLoginQR(body, word, sentence, null); return; }
+    // 兜底：找不到容器时也给出可见反馈，绝不再静默
+    showToast('保存到生词本需要先登录', false);
   }
 
   function startLoginPoll(qrcodeKey, word, sentence, qrWrap, searchTargetEl) {
@@ -1244,6 +1351,7 @@
   let ytVideoEl = null;     // 缓存的主 video（timeupdate 监听挂它身上）
   let ytOverlayCurIdx = -1; // 当前渲染的字幕行索引，避免重复渲染
   let ytSubsLoading = false; // 字幕轨获取中（在字幕区显示"获取字幕中..."）
+  let ytSubsFailed = false;  // 🆕 字幕获取失败态：不再静默消失，改为常驻提示行 + 重试（Apple 审核反馈：功能像坏了）
 
   // ---- 桥接通信（隔离世界 ↔ MAIN world） ----
   function ytBridgeRequest(action, payload) {
@@ -1300,9 +1408,8 @@
   function ytCloseOverlayCard(resumeVideo) {
     const cardEl = document.getElementById('ciba-yt-overlay-card');
     if (cardEl) cardEl.classList.remove('ciba-yt-overlay-card--show');
-    // 关卡时清掉卡内登录二维码与轮询
-    const ytDetail = document.getElementById('ciba-yt-overlay-detail');
-    const ytQr = ytDetail && ytDetail.querySelector('.ciba-video-ocr-login-qr');
+    // 关卡时清掉卡内登录二维码与轮询（二维码挂在卡片本体，卡片级查找）
+    const ytQr = cardEl && cardEl.querySelector('.ciba-video-ocr-login-qr');
     if (ytQr) ytQr.remove();
     if (bodyLoginPollTimer) { clearInterval(bodyLoginPollTimer); bodyLoginPollTimer = null; }
     // 关卡后恢复播放（点词时暂停过）
@@ -1835,6 +1942,21 @@
     lineEl.removeAttribute('data-raw');
   }
 
+  // ---- 🆕 渲染"字幕获取失败"常驻提示行（可重试，不静默消失）----
+  function ytRenderFailLine() {
+    const lineEl = document.getElementById('ciba-yt-overlay-line');
+    if (!lineEl) return;
+    lineEl.innerHTML = `<span class="ciba-yt-overlay-fail">双语字幕暂时未能获取 · <span class="ciba-yt-overlay-retry" id="ciba-yt-sub-retry">点击重试</span> · 查词翻译无需登录</span>`;
+    lineEl.removeAttribute('data-raw');
+    const retry = document.getElementById('ciba-yt-sub-retry');
+    if (retry) retry.addEventListener('click', (e) => {
+      e.stopPropagation();
+      ytSubsFailed = false;
+      ytOverlayCurIdx = -1;
+      ytLoadCurrentVideo();
+    });
+  }
+
   // ---- 主 tick：切换显示行 + 广告/空档处理 + 原生 CC 视觉隐藏 ----
   function ytOverlayTick() {
     const overlayEl = document.getElementById('ciba-yt-video-overlay');
@@ -1843,7 +1965,7 @@
     const video = ytVideoEl && ytVideoEl.isConnected ? ytVideoEl : (ytVideoEl = findVideoElement());
     const hasCues = ytCues.length > 0;
     const adShowing = !!(player && player.classList.contains('ad-showing'));
-    const show = (hasCues || ytSubsLoading) && video && !adShowing && ytSubsEnabled;
+    const show = (hasCues || ytSubsLoading || ytSubsFailed) && video && !adShowing && ytSubsEnabled;
     overlayEl.style.display = show ? '' : 'none';
     // 有我们的字幕在显示时才视觉隐藏原生 CC（不动播放器 CC 开关状态，
     // timedtext 请求照发，网络捕获照收）
@@ -1853,6 +1975,12 @@
       // 实际靠 :empty 规则隐藏行），避免关闭开关后残留最后一行字幕/加载提示
       ytRenderOverlayLine(null);
       ytOverlayCurIdx = -1;
+      return;
+    }
+
+    // 🆕 失败态：常驻提示行（可点重试），不再静默消失
+    if (ytSubsFailed && !ytSubsLoading) {
+      if (ytOverlayCurIdx !== -3) { ytOverlayCurIdx = -3; ytRenderFailLine(); }
       return;
     }
 
@@ -1899,22 +2027,27 @@
     }
     if (token !== ytLoadingToken) return;
     if (!info || !info.tracks || !info.tracks.length) {
-      // 无人工/自动字幕轨：结束加载态，清掉提示行
+      // 无人工/自动字幕轨：结束加载态，转失败提示行（不再静默清掉）
       ytSubsLoading = false;
-      ytRenderOverlayLine(null);
+      ytSubsFailed = true;
+      ytOverlayCurIdx = -1;
+      ytOverlayTick();
       return;
     }
 
     const pick = ytPickTrack(info.tracks);
     if (!pick || !pick.baseUrl) {
       ytSubsLoading = false;
-      ytRenderOverlayLine(null);
+      ytSubsFailed = true;
+      ytOverlayCurIdx = -1;
+      ytOverlayTick();
       return;
     }
     try {
       const json3 = await ytBridgeRequest('fetchTrack', { url: pick.baseUrl });
       if (token !== ytLoadingToken) return;
       ytSubsLoading = false;
+      ytSubsFailed = false;
       ytCues = ytBuildCues(json3);
       ytMtTrackUrl = pick.baseUrl;      // 记录轨地址，供翻译轨拉取
       if (ytMtRetryTimer) { clearTimeout(ytMtRetryTimer); ytMtRetryTimer = null; }
@@ -1934,7 +2067,9 @@
       // 拉取失败：保留原生字幕（不挂 ciba-hide-native-caps，用户仍可开 CC）
       if (token !== ytLoadingToken) return;
       ytSubsLoading = false;
-      ytRenderOverlayLine(null);
+      ytSubsFailed = true;
+      ytOverlayCurIdx = -1;
+      ytOverlayTick();
     }
   }
 
@@ -1964,6 +2099,7 @@
       if (navUrl !== ytLastNavUrl) {
         ytLastNavUrl = navUrl;
         ytCues = [];
+        ytSubsFailed = false; // 换片重置失败态，新视频重新加载
         ytMtByIndex = []; // 换片重置机器翻译
         ytMtTrackUrl = '';
         ytMtTransUrl = '';

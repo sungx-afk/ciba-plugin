@@ -74,6 +74,29 @@ function initApp() {
   var tryBtn = document.getElementById('ciba_try_btn');
   if (tryBtn && isSafariExt()) tryBtn.classList.remove('hide');
 
+  // 🆕 Safari popover 用固定高度（见 popup.css 的 body.safari-popover）：
+  // 内容异步变高时 popover 有时不重排，滚动「时有时无」；固定高度后滚动条始终可用。
+  if (isSafariExt()) {
+    document.body.classList.add('safari-popover');
+    // html 层同步限高可滚：Safari popover 有时把滚动算在 html 上而非 body
+    document.documentElement.style.height = '560px';
+    document.documentElement.style.overflowY = 'auto';
+  }
+
+  // 🆕 禁止自动聚焦（事件级防御）：Safari popover 在显示动画完成后才把焦点交给 web view
+  // 并聚焦第一个 input（时机不定）；焦点在输入框上时滚轮/方向键事件被吃掉，弹窗无法滚动。
+  // 策略：用户真实点击（mousedown）之前，任何 input 获焦一律释放。
+  var userInteracted = false;
+  document.addEventListener('mousedown', function () { userInteracted = true; }, true);
+  document.addEventListener('focusin', function (e) {
+    if (!userInteracted && e.target && e.target.tagName === 'INPUT') {
+      e.target.blur();
+    }
+  });
+  if (document.activeElement && document.activeElement.tagName === 'INPUT') {
+    document.activeElement.blur();
+  }
+
   getLocalToken().then((value)=>{
     if (value && value.ciba_token){
       handleQrcode(value.ciba_token)
@@ -81,12 +104,39 @@ function initApp() {
       fetchQrCodeKey()
     }
   })
-  // 配置来源：content script 在 cibaen.com 页面 fetch 同源资源后写入 chrome.storage
-  // （这样 popup 不需要向 Safari 申请 cibaen.com 的 host 权限——cbaen.com 完全不出现在 manifest 里）
-  // 未访问过 cibaen.com 时 storage 为空，使用 fail-open 默认值（Apple 按钮显示、密码登录区隐藏）
-  chrome.storage.local.get('ciba_client_config', function (result) {
-    var config = result && result.ciba_client_config || { appleLoginEnabled: true, reviewLoginEnabled: false };
-    if (config.reviewLoginEnabled) {
+  // 🆕 popup 直接实时拉服务端配置（client-config.json 带 CORS * 头，跨域可用，无需 host 权限）。
+  // 审核员/用户可能只打开 popup、从不访问官网——旧的「content script 在官网页面写 storage」
+  // 链路覆盖不到这个场景。取值优先级：实时拉取 → storage 缓存 → fail-open 默认值。
+  // 时间戳防静态文件浏览器缓存。
+  function loadClientConfig(cb) {
+    chrome.storage.local.get('ciba_client_config', function (result) {
+      var cached = result && result.ciba_client_config;
+      var fallback = cached || { appleLoginEnabled: true, reviewLoginEnabled: false };
+      try {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://cibaen.com/client-config.json?t=' + Date.now(), true);
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState !== 4) return;
+          if (xhr.status === 200) {
+            try {
+              var cfg = JSON.parse(xhr.responseText);
+              if (cfg) {
+                try { chrome.storage.local.set({ ciba_client_config: cfg }); } catch (e) {}
+                cb(cfg);
+                return;
+              }
+            } catch (e) {}
+          }
+          cb(fallback);
+        };
+        xhr.send();
+      } catch (e) { cb(fallback); }
+    });
+  }
+
+  loadClientConfig(function (config) {
+    // 🆕 密码登录区仅 Safari 插件显示（与卡内/划词密码登录同一门禁策略；Chrome/Edge 不出）
+    if (config.reviewLoginEnabled && isSafariExt()) {
       document.getElementById('password-login-section').style.display = 'flex';
       setupPasswordLogin();
     } else {

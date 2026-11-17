@@ -452,6 +452,79 @@
   color: #666;
   margin-top: 4px;
 }
+/* 🆕 跳过登录入口：弱化显示，可点击 */
+.ciba-video-ocr-login-qr__skip {
+  font-size: 10px;
+  color: #94a3b8;
+  margin-top: 6px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.ciba-video-ocr-login-qr__skip:hover {
+  color: #38bdf8;
+}
+/* 🆕 卡内账号密码登录区 */
+.ciba-video-ocr-login-qr__pwd {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.15);
+}
+.ciba-video-ocr-login-qr__pwd-divider {
+  font-size: 10px;
+  color: #94a3b8;
+  margin-bottom: 6px;
+}
+.ciba-video-ocr-login-qr__pwd-input {
+  width: 100%;
+  box-sizing: border-box;
+  height: 26px;
+  margin-bottom: 6px;
+  padding: 0 8px;
+  font-size: 12px;
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 5px;
+  outline: none;
+}
+.ciba-video-ocr-login-qr__pwd-input:focus {
+  border-color: #38bdf8;
+}
+.ciba-video-ocr-login-qr__pwd-btn {
+  width: 100%;
+  height: 28px;
+  font-size: 12px;
+  color: #fff;
+  background: #3b82f6;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.ciba-video-ocr-login-qr__pwd-btn:hover {
+  background: #2563eb;
+}
+.ciba-video-ocr-login-qr__pwd-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.ciba-video-ocr-login-qr__pwd-err {
+  font-size: 10px;
+  color: #f87171;
+  margin-top: 4px;
+  min-height: 12px;
+}
+.ciba-yt-overlay-card .ciba-video-ocr-login-qr__skip {
+  color: #cbd5e1;
+}
+/* YT 覆盖层卡：毛玻璃底上密码区提亮 */
+.ciba-yt-overlay-card .ciba-video-ocr-login-qr__pwd-divider {
+  color: #cbd5e1;
+}
+.ciba-yt-overlay-card .ciba-video-ocr-login-qr__pwd-input {
+  color: #f1f5f9;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
 /* YT 覆盖层释义卡内的登录二维码：透出毛玻璃底，提示文字调亮 */
 .ciba-yt-overlay-card .ciba-video-ocr-login-qr {
   margin-top: 4px;
@@ -566,6 +639,22 @@
   font-weight: 400 !important;
   color: #cbd5e1 !important;
   cursor: default !important;
+}
+/* 🆕 字幕获取失败提示行（常驻 + 可重试，不静默消失） */
+.ciba-yt-overlay-line .ciba-yt-overlay-fail {
+  display: inline-block !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  color: #f59e0b !important;
+  cursor: default !important;
+}
+.ciba-yt-overlay-line .ciba-yt-overlay-retry {
+  color: #38bdf8 !important;
+  cursor: pointer !important;
+  text-decoration: underline !important;
+}
+.ciba-yt-overlay-line .ciba-yt-overlay-retry:hover {
+  color: #7dd3fc !important;
 }
 /* 机器翻译行：原文下方第二行，弱化显示 */
 .ciba-yt-overlay-line .ciba-yt-overlay-mt {
