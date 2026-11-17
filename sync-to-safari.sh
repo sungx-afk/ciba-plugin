@@ -28,6 +28,7 @@ echo "   →    $DEST"
 # 只同步扩展相关文件/目录；不动 Safari 原生代码（Swift、Info.plist、.xcodeproj 等）
 rsync -a --delete \
   --include='/manifest.json' \
+  --include='/_locales'    --include='/_locales/**' \
   --include='/js'          --include='/js/**' \
   --include='/css'         --include='/css/**' \
   --include='/images'      --include='/images/**' \

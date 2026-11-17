@@ -59,12 +59,20 @@ function initApp() {
   // ===== 新增：初始化“在此网站禁用”开关（最少改动，一行调用）=====
   initDisableToggle();
 
+  // ===== 新增：初始化“添加单词本时上传视频截图”开关 =====
+  initShotUploadToggle();
+
   // ===== 「进入网页学习」按钮的平台区分 =====
   // Safari/MAS 版隐藏（Apple 3.1.1：不得从 App 表面引导至官网购买页）；
   // Chrome 版保留（Chrome 商店无此限制，官网深度登录入口对用户有用）。
   // isSafariExt() 靠 runtime.getURL 的 safari-web-extension:// 前缀判断。
   var cibaMain = document.getElementById('ciba_main');
   if (cibaMain && !isSafariExt()) cibaMain.classList.remove('hide');
+
+  // ===== 「试一试」按钮：与「进入网页学习」相反，仅 Safari 版显示 =====
+  // 它是给 Apple 审核员的免登录演示入口；Chrome/Edge 商店无此诉求，不显示。
+  var tryBtn = document.getElementById('ciba_try_btn');
+  if (tryBtn && isSafariExt()) tryBtn.classList.remove('hide');
 
   getLocalToken().then((value)=>{
     if (value && value.ciba_token){
@@ -102,6 +110,29 @@ function initApp() {
 }
 
 // ===== 新增函数：在此网站禁用（追加在文件末尾，不改动上面任何代码）=====
+// ===== “添加单词本时上传视频截图”开关：与设置页同一存储键，双向实时同步 =====
+function initShotUploadToggle() {
+  var toggle = document.getElementById('shotUploadToggle');
+  if (!toggle) return;
+
+  // 读初始状态（storage.sync.allowScreenshotUpload，与 options 页 allowScreenshotUpload 同键）
+  chrome.storage.sync.get({ allowScreenshotUpload: false }, function(r) {
+    toggle.checked = !!r.allowScreenshotUpload;
+  });
+
+  // 弹窗拨动 → 写入存储（内容脚本监听 onChanged 实时刷新卡片入口）
+  toggle.addEventListener('change', function() {
+    chrome.storage.sync.set({ allowScreenshotUpload: toggle.checked });
+  });
+
+  // 设置页（或其他弹窗）改动 → 实时反映到本开关
+  chrome.storage.onChanged.addListener(function(changes, area) {
+    if (area === 'sync' && changes.allowScreenshotUpload) {
+      toggle.checked = !!changes.allowScreenshotUpload.newValue;
+    }
+  });
+}
+
 function initDisableToggle() {
   var toggle = document.getElementById('disableToggle');
   var siteNameEl = document.getElementById('currentSiteName');

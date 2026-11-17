@@ -18,5 +18,12 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return false; // 同步响应，channel 可以关
   }
 
+  if (msg.action === 'openOptions') {
+    // 打开扩展设置页（content script 没有 openOptionsPage API，需经 service worker 中转）
+    chrome.runtime.openOptionsPage();
+    sendResponse({ ok: true });
+    return false;
+  }
+
   return false;
 });

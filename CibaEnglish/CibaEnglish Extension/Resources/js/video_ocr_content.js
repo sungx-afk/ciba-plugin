@@ -128,6 +128,8 @@
           <div class="ciba-video-ocr-text-box" id="ciba-video-ocr-result-text" contenteditable="true">尚未识别</div>
           <div class="ciba-video-ocr-word-detail" id="ciba-video-ocr-word-detail" style="height:180px; overflow-y:auto; color:#94a3b8; display:flex; align-items:center; justify-content:center; font-size:13px;">点击单词翻译</div>
         </div>
+        <!-- 🆕 截图上传设置入口：开关关闭时显示，点击打开设置页（与 YT 卡共用 updateShotBadge） -->
+        <div class="ciba-video-ocr-shot-badge" id="ciba-video-ocr-shot-badge" style="display:none;" title="开启后生词卡会附带视频画面，复习时更有语境">📷 截图上传未开启 · 点此开启后生词卡附视频画面</div>
         <div class="ciba-video-ocr-footer">
           <button class="ciba-video-ocr-toggle-btn" id="ciba-video-ocr-toggle-btn" title="临时关闭/开启 OCR 识别">
             <span id="ciba-video-ocr-toggle-text" style="color:#ffffff !important;">⏸ 暂停识别</span>
@@ -146,7 +148,7 @@
     injectGlobalTriggerButton();
   }
 
-  function showToast(message, isLoading = true, duration = 4000) {
+  function showToast(message, isLoading = true, duration = 4000, onClick = null) {
     if (!toastElement) initOverlayElements();
     const msgEl = document.getElementById("ciba-video-ocr-toast-msg");
     const spinner = toastElement.querySelector(".ciba-video-ocr-spinner");
@@ -175,7 +177,14 @@
     }
 
     toastElement.classList.add("show");
-    if (!isLoading) setTimeout(() => toastElement.classList.remove("show"), duration);
+    // 🆕 支持可点击 Toast（如「点此开启截图上传」）：传入 onClick 即变为可点
+    toastElement.onclick = onClick || null;
+    toastElement.style.cursor = onClick ? "pointer" : "";
+    if (!isLoading) setTimeout(() => {
+      toastElement.classList.remove("show");
+      toastElement.onclick = null;
+      toastElement.style.cursor = "";
+    }, duration);
   }
 
   function hideToast() {
@@ -240,7 +249,27 @@
     cardElement.classList.add("show");
 
     updateAddButtonState();
+    updateShotBadge();
   }
+
+  // 🆕 截图上传设置入口：开关关闭时在 OCR 结果卡 / YT 覆盖层卡显示角标，点击打开设置页
+  function updateShotBadge() {
+    const badge = document.getElementById("ciba-video-ocr-shot-badge");
+    const ytBadge = document.getElementById("ciba-yt-overlay-shot-badge");
+    chrome.storage.sync.get(DEFAULT_SETTINGS, (s) => {
+      const off = !s.allowScreenshotUpload;
+      [badge, ytBadge].forEach((el) => {
+        if (!el) return;
+        el.style.display = off ? "block" : "none";
+        el.onclick = off ? () => chrome.runtime.sendMessage({ action: "openOptions" }) : null;
+      });
+    });
+  }
+
+  // 🆕 设置页实时同步：allowScreenshotUpload 变化时（含设置页开着时切换开关）立即刷新两个卡片的入口状态
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === "sync" && changes.allowScreenshotUpload) updateShotBadge();
+  });
 
   function hideResultCard() {
     if (cardElement) cardElement.classList.remove("show");
@@ -679,7 +708,10 @@
   }
 
   // ===== 🆕 独立出来的保存单词函数（改为接收 wordName + caption 参数，避免竞态读到空值） =====
-  function saveWordToServer(token, picFileUrl, wordName, caption) {
+  // silentSuccess：带图后台保存（方案三）时为 true——点击瞬间已弹过「已加入生词本」，
+  // 成功后不再重复弹「已添加到单词本」；失败/无图路径不受影响，照常提示
+  // successToastText：自定义成功文案（截图上传失败降级保存时用，弹「已加入生词本（截图上传失败）」单条）
+  function saveWordToServer(token, picFileUrl, wordName, caption, noShotHint, silentSuccess, successToastText) {
     showToast('正在保存...', true);
     const xhrSave = new XMLHttpRequest();
     xhrSave.open("POST", `${SERVER_API}/anki/movie2card.json?token=${encodeURIComponent(token)}`, true);
@@ -690,10 +722,33 @@
       try {
         const saveResp = JSON.parse(xhrSave.responseText);
         if (saveResp && saveResp.result == 0) {
-          showToast(`"${wordName}" 已添加到单词本 ✅`, false);
           hideResultCard();
           // YouTube 覆盖层：添加成功即关闭释义卡并继续播放视频
-          if (IS_YOUTUBE) ytCloseOverlayCard(true);
+          if (IS_YOUTUBE) {
+            ytCloseOverlayCard(true);
+          } else {
+            // 非 YT 站点：与 YouTube 行为一致——添加成功后关闭卡片并继续播放
+            //（用户刚点击按钮带手势，play 不会被自动播放策略拦截）
+            resumeVideoIfPaused();
+          }
+          // 🆕 无图保存成功且开关关闭 → 可点击 Toast 引导开启（限 3 次，避免打扰）
+          if (noShotHint) {
+            chrome.storage.local.get({ shot_hint_count: 0 }, (r) => {
+              if (r.shot_hint_count >= 3) {
+                showToast(`"${wordName}" 已添加到单词本 ✅`, false);
+                return;
+              }
+              chrome.storage.local.set({ shot_hint_count: r.shot_hint_count + 1 });
+              showToast('已加入生词本（未附截图）· 点此开启截图上传', false, 8000, () => {
+                chrome.runtime.sendMessage({ action: "openOptions" });
+                hideToast();
+              });
+            });
+          } else if (successToastText) {
+            showToast(successToastText, false);
+          } else if (!silentSuccess) {
+            showToast(`"${wordName}" 已添加到单词本 ✅`, false);
+          }
         } else if (saveResp && saveResp.result == -10001) {
           showToast('登录已过期，请重新扫码登录', false);
         } else {
@@ -742,12 +797,22 @@
         chrome.storage.sync.get(DEFAULT_SETTINGS, function(uploadSettings) {
           if (!uploadSettings.allowScreenshotUpload || !lastFullVideoBlob) {
             // 未开启上传或没有截图，直接保存（不带图）
-            saveWordToServer(token, '', wordToSave, captionToSave);
+            // 第 5 参：仅「开关关闭」时提示开启（抓帧失败但开关开着时提示会误导）
+            saveWordToServer(token, '', wordToSave, captionToSave, !uploadSettings.allowScreenshotUpload);
             return;
           }
 
           // 允许上传且有截图，走七牛上传流程
-          showToast('正在上传截图...', true);
+          // 🆕 方案三：上传+保存放后台执行——点击瞬间立即关卡、恢复播放、给确认提示，
+          // 用户不再干等「上传截图→存词」两个串行请求（词的入库时机不变，仍是传完图后保存）。
+          // hideResultCard 只移除 show 类、不清 lastFullVideoBlob，后台链路不受影响。
+          hideResultCard();
+          if (IS_YOUTUBE) {
+            ytCloseOverlayCard(true);
+          } else {
+            resumeVideoIfPaused();
+          }
+          showToast(`"${wordToSave}" 已添加到单词本 ✅`, true);
           blobToBase64(lastFullVideoBlob).then((base64Data) => {
             const base64Str = base64Data.replace(/^data:.*;base64,/, '');
             const fileName = generateUuid(16) + '.png';
@@ -761,7 +826,7 @@
                 const resp = JSON.parse(xhrToken.responseText);
                 if (resp.result !== 0) {
                   hideToast();
-                  saveWordToServer(token, '', wordToSave, captionToSave); // 获取凭证失败，跳过截图
+                  saveWordToServer(token, '', wordToSave, captionToSave, false, false, '已加入生词本（截图上传失败）'); // 获取凭证失败，跳过截图
                   return;
                 }
 
@@ -778,21 +843,21 @@
                   hideToast();
                   try {
                     JSON.parse(xhrUpload.responseText);
-                    saveWordToServer(token, picFileUrl, wordToSave, captionToSave); // 上传成功，带图保存
+                    saveWordToServer(token, picFileUrl, wordToSave, captionToSave, false, true); // 上传成功，带图保存（后台静默，不再弹第二条 toast）
                   } catch (e) {
-                    saveWordToServer(token, '', wordToSave, captionToSave); // 上传失败，跳过截图
+                    saveWordToServer(token, '', wordToSave, captionToSave, false, false, '已加入生词本（截图上传失败）'); // 上传失败，跳过截图
                   }
                 };
                 xhrUpload.send(base64Str);
               } catch (e) {
                 hideToast();
-                saveWordToServer(token, '', wordToSave, captionToSave); // 异常，跳过截图
+                saveWordToServer(token, '', wordToSave, captionToSave, false, false, '已加入生词本（截图上传失败）'); // 异常，跳过截图
               }
             };
             xhrToken.send(`name=${encodeURIComponent(fileName)}&token=${encodeURIComponent(token)}`);
           }).catch(() => {
             hideToast();
-            saveWordToServer(token, '', wordToSave, captionToSave); // 图片处理失败，跳过截图
+            saveWordToServer(token, '', wordToSave, captionToSave, false, false, '已加入生词本（截图上传失败）'); // 图片处理失败，跳过截图
           });
         });
       }).catch(err => { showToast(`添加失败: ${err.message}`, false); });
@@ -850,7 +915,7 @@
     const qrWrap = document.createElement('div');
     qrWrap.className = 'ciba-video-ocr-login-qr';
     qrWrap.innerHTML = `
-      <div class="ciba-video-ocr-login-qr__title">扫码登录后即可保存到单词本</div>
+      <div class="ciba-video-ocr-login-qr__title">微信扫码登录后即可保存到生词本</div>
       <div class="ciba-video-ocr-login-qr__img-wrap">
         <img class="ciba-video-ocr-login-qr__img" src="" alt="加载中..." />
       </div>
@@ -944,6 +1009,43 @@
       xhr.send();
     }, 2000);
   }
+
+  // ===== 🆕 点击空白处 / Esc 关闭加词卡片（OCR 结果卡 + YT 覆盖层卡） =====
+  // 此前两张卡只能通过保存成功/手动 × 关闭，点击空白无反应
+  function cibaOcrCardVisible() {
+    return !!(cardElement && cardElement.classList.contains("show"));
+  }
+  function cibaYtCardVisible() {
+    const el = document.getElementById('ciba-yt-overlay-card');
+    return !!(el && el.classList.contains('ciba-yt-overlay-card--show'));
+  }
+  // 🆕 恢复暂停中的视频（点空白/Esc 关卡、加词成功共用）
+  function resumeVideoIfPaused() {
+    const video = findVideoElement();
+    if (video && video.paused) {
+      const p = video.play();
+      if (p && typeof p.catch === 'function') p.catch(function () {});
+    }
+  }
+  document.addEventListener("mousedown", function (e) {
+    // 点在 OCR 结果卡内部（含卡内登录二维码）：不关
+    if (cardElement && cardElement.contains(e.target)) return;
+    // 点在 YT 覆盖层（释义卡 + 字幕行）内部：不关——点字幕里的词是正常操作
+    const ytOverlay = document.getElementById('ciba-yt-video-overlay');
+    if (ytOverlay && ytOverlay.contains(e.target)) return;
+    // 点在视频页悬浮触发按钮上：唤起入口，交给它自己的逻辑
+    if (triggerBtnElement && triggerBtnElement.contains(e.target)) return;
+    // 隐私须知卡：需要用户明确勾选同意，不允许点空白误关
+    const privacyCard = document.getElementById('privacy-notice-card');
+    if (privacyCard && privacyCard.contains(e.target)) return;
+    if (cibaOcrCardVisible()) { hideResultCard(); resumeVideoIfPaused(); }
+    if (cibaYtCardVisible()) ytCloseOverlayCard(true); // 关卡同时恢复播放
+  }, true);
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    if (cibaOcrCardVisible()) { hideResultCard(); resumeVideoIfPaused(); return; }
+    if (cibaYtCardVisible()) ytCloseOverlayCard(true);
+  }, true);
 
   // ===== 🆕 广告/轮播视频识别 & 用户操作追踪（避免首页轮播广告反复触发 OCR）=====
   let lastUserGestureTs = 0;
@@ -1222,9 +1324,13 @@
       <div class="ciba-yt-overlay-card" id="ciba-yt-overlay-card">
         <div class="ciba-yt-overlay-card__close" id="ciba-yt-overlay-card-close" title="关闭">×</div>
         <div class="ciba-video-ocr-word-detail ciba-yt-overlay-detail" id="ciba-yt-overlay-detail"></div>
-        <button class="ciba-video-ocr-add-btn ciba-yt-overlay-add-btn" id="ciba-yt-overlay-add-btn" title="添加到单词本">
-          <span style="color:#ffffff !important;">添加到单词本</span>
-        </button>
+        <!-- 🆕 底部横排：截图上传设置入口（左）+ 添加到单词本（右） -->
+        <div class="ciba-yt-overlay-footer">
+          <div class="ciba-video-ocr-shot-badge" id="ciba-yt-overlay-shot-badge" style="display:none;" title="开启后生词卡会附带视频画面">📷 截图上传未开启 · 点此开启后生词卡附视频画面</div>
+          <button class="ciba-video-ocr-add-btn ciba-yt-overlay-add-btn" id="ciba-yt-overlay-add-btn" title="添加到单词本">
+            <span style="color:#ffffff !important;">添加到单词本</span>
+          </button>
+        </div>
       </div>
       <div class="ciba-yt-overlay-line" id="ciba-yt-overlay-line"></div>
     `;
@@ -1241,7 +1347,32 @@
       currentSentence = sentence;
       const video = findVideoElement();
       if (video && !video.paused) video.pause(); // 暂停便于细看释义
+      // 🆕 抓当前帧作为视频截图，供「添加到单词本」随词上传。
+      // YT 播放器视频源是 MSE blob:（同源，画布不被污染），drawImage 可用；
+      // 与非 YT 站 OCR 流程里 lastFullVideoBlob 的生成方式（canvas→toBlob）保持一致。
+      try {
+        if (video && video.videoWidth) {
+          const c = document.createElement('canvas');
+          c.width = video.videoWidth;
+          c.height = video.videoHeight;
+          c.getContext('2d').drawImage(video, 0, 0);
+          c.toBlob((b) => {
+            if (b) {
+              lastFullVideoBlob = b;
+              console.log('[ciba] YT 截图帧已捕获', b.size, 'bytes');
+            } else {
+              console.warn('[ciba] YT 截图 toBlob 返回 null');
+            }
+          }, 'image/png');
+        } else {
+          console.warn('[ciba] YT 抓帧跳过：video 不存在或 videoWidth 为 0');
+        }
+      } catch (err) {
+        console.warn('[ciba] YT 抓帧异常（多半是画布跨域污染）:', err && err.name);
+        /* 抓帧失败不影响查词，加词时走无图保存 */
+      }
       document.getElementById('ciba-yt-overlay-card').classList.add('ciba-yt-overlay-card--show');
+      updateShotBadge(); // 🆕 弹卡时刷新截图上传入口状态
       searchWordInCard(word, sentence, document.getElementById('ciba-yt-overlay-detail'));
     });
     document.getElementById('ciba-yt-overlay-card-close').addEventListener('click', () => {

@@ -26,13 +26,15 @@
          且必须让用户在未登录时就能看到并用到，因此本块独立于登录态，始终可见。 -->
     <div class="card" id="guest_usage">
         <div class="card__tip bold" id="guest_usage_title">无需登录，以下功能立即可用</div>
-        <div class="card__tip left">1. YouTube 播放页自动显示双语字幕，点字幕里的词即可翻译</div>
-        <div class="card__tip left">2. B站/腾讯/爱奇艺等视频站按「空格键」暂停 → 自动识别字幕</div>
+        <div class="card__tip left">1. B站｜腾讯｜爱奇艺等视频站按「空格键」暂停 → 自动识别字幕</div>
+        <div class="card__tip left">2. YouTube 播放页自动显示双语字幕，点字幕里的词即可翻译</div>
         <div class="card__tip left">3. 英文网页双击单词 → 即时翻译</div>
         <div class="card__tip left" id="guest_usage_tip3">仅「添加到生词本」需要登录</div>
         <!-- 一键试用：直接打开带英文字幕的 YouTube 视频，双语覆盖层立即可见。
              目的：让用户/审核员零摸索看到免登录能力（5.1.1 两轮被拒的核心即「找不到入口」）。 -->
-        <a class="btn-primary" href="https://www.youtube.com/watch?v=8jPQjjsBbIc" target="_blank">试一试：打开示例视频（免登录）</a>
+        <!-- 「试一试」按钮：仅 Safari/MAS 版显示（配合 Apple 审核 5.1.1，引导审核员 10 秒看到免登录能力）。
+             Chrome/Edge 版不显示。默认 hide，由 popup.js 按 isSafariExt() 决定是否显示。 -->
+        <a class="btn-primary hide" id="ciba_try_btn" href="https://www.youtube.com/watch?v=8jPQjjsBbIc" target="_blank">试一试：打开示例视频（免登录）</a>
     </div>
 
     <!-- 未登录态：登录是可选的，仅用于生词本云同步 -->
@@ -42,7 +44,7 @@
             <img class="qrcode hide" id="qrcode" src="" alt="微信扫码登录" />
         </div>
         <div id="password-login-section" class="password-login-section">
-            <div class="divider">———— 或账号登录（测试/审核用） ————</div>
+            <div class="divider">———— 或账号登录 ————</div>
             <input type="text" id="login-username" class="login-input" placeholder="请输入账号" />
             <input type="password" id="login-password" class="login-input" placeholder="请输入密码" />
             <button id="login-btn" class="btn-primary login-btn">登 录</button>
@@ -73,16 +75,30 @@
         <span>通过 Apple 登录</span>
     </button>
 
-    <!-- ===== 网站禁用开关：提到最外面，始终显示 ===== -->
-    <div class="disable-row">
-        <div>
-            <div class="disable-row__label">在此网站禁用</div>
-            <div class="disable-row__site" id="currentSiteName">获取中...</div>
+    <!-- ===== 设置区块：截图上传 + 网站禁用，合并为一个区块 ===== -->
+    <div class="settings-block">
+        <!-- 截图上传开关：与设置页同一存储键（storage.sync.allowScreenshotUpload），双向实时同步 -->
+        <div class="setting-row">
+            <div>
+                <div class="setting-row__label">添加单词本时上传视频截图</div>
+                <div class="setting-row__site">开启后生词卡附带视频画面</div>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="shotUploadToggle">
+                <span class="toggle__slider"></span>
+            </label>
         </div>
-        <label class="toggle">
-            <input type="checkbox" id="disableToggle">
-            <span class="toggle__slider"></span>
-        </label>
+        <!-- 网站禁用开关：提到最外面，始终显示 -->
+        <div class="setting-row">
+            <div>
+                <div class="setting-row__label">在此网站禁用</div>
+                <div class="setting-row__site" id="currentSiteName">获取中...</div>
+            </div>
+            <label class="toggle">
+                <input type="checkbox" id="disableToggle">
+                <span class="toggle__slider"></span>
+            </label>
+        </div>
     </div>
 </body>
 </html>

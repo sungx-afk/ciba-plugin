@@ -145,6 +145,44 @@
   padding: 10px 0 !important;
 }
 
+/* 🆕 截图上传设置入口（开关关闭时显示，点击打开设置页；OCR 结果卡与 YT 覆盖层卡共用） */
+.ciba-video-ocr-shot-badge {
+  display: none;
+  margin: 10px 18px 0;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #94a3b8;
+  cursor: pointer;
+  text-align: left;
+}
+.ciba-video-ocr-shot-badge:hover {
+  color: #38bdf8;
+}
+/* YT 覆盖层卡：截图上传入口与「添加到单词本」同排（入口在左、按钮在右） */
+.ciba-yt-overlay-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  /* 沉底：吸收卡片 min-height(300px) 与释义区 max-height(200px) 之间的差值，
+     空白留在释义区和本行之间（与改版前行为一致），底部不再留白 */
+  margin-top: auto !important;
+  padding-top: 10px !important;
+}
+.ciba-yt-overlay-card--show .ciba-yt-overlay-footer .ciba-yt-overlay-add-btn {
+  /* 原规则用 margin-top:auto 把按钮沉底，改为由 footer 行统一控制 */
+  margin-top: 0 !important;
+}
+.ciba-yt-overlay-footer .ciba-video-ocr-shot-badge {
+  flex: 1 !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  font-size: 11px !important;
+}
+
 .ciba-video-ocr-footer {
   padding: 12px 18px !important;
   background: rgba(30, 41, 59, 0.7) !important;

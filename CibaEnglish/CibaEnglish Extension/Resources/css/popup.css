@@ -284,7 +284,7 @@ body {
 }
 
 /* ===== 在此网站禁用（新增，最少改动） ===== */
-.disable-row {
+.setting-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -294,12 +294,30 @@ body {
     border-radius: 0 0 8px 8px;
     background: #fafafa;
 }
-.disable-row__label {
+/* ===== 设置区块：截图上传 + 网站禁用合并为一个区块 =====
+   区块外壳接管背景/圆角/顶边距，内部行去掉各自的卡片观感，行间用细分隔线 */
+.settings-block {
+    margin-top: 12px;
+    background: #fafafa;
+    border-top: 1px solid #eee;
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+}
+.settings-block .setting-row {
+    margin-top: 0;
+    background: transparent;
+    border-top: none;
+    border-radius: 0;
+}
+.settings-block .setting-row + .setting-row {
+    border-top: 1px solid #eee;
+}
+.setting-row__label {
     font-size: 13px;
     color: #333;
     font-weight: 500;
 }
-.disable-row__site {
+.setting-row__site {
     font-size: 11px;
     color: #999;
     margin-top: 2px;

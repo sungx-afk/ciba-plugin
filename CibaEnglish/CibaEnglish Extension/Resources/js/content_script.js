@@ -139,7 +139,7 @@ wechatLoginCloseBtn.onclick = function () {
 wechatLoginHeader.appendChild(wechatLoginCloseBtn);
 
 var qrcodeText = document.createElement("div");
-qrcodeText.innerText = "扫码登录后即可保存到生词本"
+qrcodeText.innerText = "微信扫码登录后即可保存到生词本"
 qrcodeText.style.fontSize = "15px";
 qrcodeText.style.color = "#f8fafc";
 qrcodeText.style.marginBottom = "12px";
@@ -1381,6 +1381,22 @@ function showToast(msg, type = 'success', duration = 2000) {
         });
     });
   }
+  // ===== 点击空白处 / 按 Esc 关闭弹层 =====
+  // 此前查词卡片只能靠完成操作或重新划词关闭，点击空白处无反应
+  function isCibaLayerVisible(el) { return !!el && el.style.display !== "none"; }
+  document.addEventListener("mousedown", function (e) {
+    // 点在弹层内部：不关闭
+    if (layerContainer.contains(e.target) || wechatLoginLayer.contains(e.target)) return;
+    // 点在划词小图标上：那是唤起入口，交给它自己的 click 逻辑
+    if (floatingIcon.contains(e.target)) return;
+    if (isCibaLayerVisible(layerContainer)) hideLayer();
+    if (isCibaLayerVisible(wechatLoginLayer)) closeWechatLoginLayer();
+  }, true);
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    if (isCibaLayerVisible(wechatLoginLayer)) { closeWechatLoginLayer(); return; }
+    if (isCibaLayerVisible(layerContainer)) hideLayer();
+  }, true);
 }// ========== initCibaPlugin 函数结束 ==========
 
 
